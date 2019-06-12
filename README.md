@@ -1,2 +1,6 @@
 # maintenance-pc
-消防行业用于维保公司使用的产品, 管理公司人员对业主单位维保是否合格
+
+> My premium Nuxt.js project
+
+## Build Setup
+项目运行需要自己的包，直接install之后并不能直接运行

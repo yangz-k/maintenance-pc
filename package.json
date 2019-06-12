@@ -1,0 +1,50 @@
+{
+    "name": "maintenance-pc",
+    "version": "1.0.0",
+    "description": "My premium Nuxt.js project",
+    "author": "YZ",
+    "private": true,
+    "scripts": {
+        "dev": "nuxt",
+        "build": "nuxt build",
+        "start": "nuxt start",
+        "//": "打包本地环境",
+        "generate": "cross-env SITE_ENV=prod nuxt generate",
+        "generate-test ": "cross-env SITE_ENV=test nuxt generate",
+        "generate-dev": "cross-env SITE_ENV=dev nuxt generate"
+    },
+    "config": {
+        "nuxt": {
+            "host": "127.0.0.1",
+            "port": "1000"
+        }
+    },
+    "dependencies": {
+        "audit": "0.0.6",
+        "axios": "^0.18.0",
+        "babel-loader": "^8.0.5",
+        "babel-polyfill": "^6.26.0",
+        "cookieparser": "^0.1.0",
+        "cross-env": "^5.2.0",
+        "echarts": "^4.2.1",
+        "element-ui": "2.7.0",
+        "fix": "0.0.6",
+        "jquery": "^3.3.1",
+        "js-cookie": "^2.2.0",
+        "js-md5": "^0.7.3",
+        "ly-downloader": "^1.0.5",
+        "nuxt": "^2.4.0",
+        "vue-i18n": "^8.9.0",
+        "ztree": "^3.5.24"
+    },
+    "devDependencies": {
+        "css-loader": "^2.1.0",
+        "node-sass": "^4.10.0",
+        "nodemon": "^1.18.9",
+        "sass-loader": "^7.1.0",
+        "scss": "^0.2.4",
+        "scss-loader": "0.0.1",
+        "style-loader": "^0.23.1",
+        "swiper": "^2.7.6"
+    }
+}

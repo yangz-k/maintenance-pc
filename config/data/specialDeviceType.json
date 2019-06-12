@@ -1,0 +1,34 @@
+{
+  "//":"室内",
+  "insideCode":  "19020000",
+  "//":"室外",
+  "outsideCode":  "19030000",
+  "//":"配电箱",
+  "fireMonitorCode":  "19050000",
+  "//":"喷淋",
+  "sprayEndCode":"19080000",
+  "//":"水位传感",
+  "waterLevel":"19150000",
+  "//":"泵",
+  "waterPump":"19180000",
+
+  "firePool":"05010000",
+  "smokeMonitorCode":"19210000",
+  "fireDoor":"19120000",
+
+  "//":"消火栓",
+  "fireHydrant_indoor":"06010000",
+  "fireHydrant_outUp":"06030000",
+  "fireHydrant_outDown":"06040000",
+  "fireHydrant_end":"'07100000",
+
+  "//":"水池",
+  "fireWaterPool":"05010000",
+  "//":"水箱",
+  "fireWaterTank":"05020000",
+  "//":"水泵",
+  "fireWaterPump":"05030000",
+
+  "//":"配电箱",
+  "distributeBox":"01010000"
+}
