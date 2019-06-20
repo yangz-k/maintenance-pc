@@ -11,10 +11,11 @@
       :rowStyle="rowStyle"
       :cellStyle="cellStyle"
       @row-click="rowClick"
+      cell-class-name = "white-space"
       @cell-mouse-leave="mouseLeave"
       @cell-mouse-enter="mouseEnter"
+      :show-header="showHeader"
     >
-      >
       <el-table-column v-if="options.mutiSelect" type="selection" width="55">
       </el-table-column>
       <el-table-column
@@ -26,19 +27,37 @@
       >
       </el-table-column>
       <!--region 数据列-->
-      <template >
-        <el-table-column v-for="(column, index) in columns"
+      <!--
+          v-if="!column.isShowTipicon"
           class="table-head"
           :prop="column.prop"
           :key="index"
           :label="column.label"
           :align="column.align"
           :min-width="column.minWidth"
-          :show-overflow-tooltip="true"
+          show-overflow-tooltip
+          :render-header="renderHeader"
+        >
+        </el-table-column>
+        <el-table-column
+          v-for="(column, index) in columns"
+          v-if="column.isShowTipicon"
+          -->
+      <template>
+        <el-table-column
+          v-for="(column, index) in columns"
+          class="table-head"
+          :prop="column.prop"
+          :key="index"
+          :label="column.label"
+          :align="column.align"
+          :min-width="column.minWidth"
+          :show-overflow-tooltip="false"
           :render-header="renderHeader"
         >
           <template slot-scope="scope">
             <el-popover
+              v-if="column.label == '是否规范'"
               placement="bottom-end"
               width="400"
               trigger="manual"
@@ -49,7 +68,7 @@
               <template v-if="!column.render">
                 <template v-if="column.formatter">
                   <div
-                  slot="reference"
+                    slot="reference"
                     class="ovfl"
                     v-html="column.formatter(scope.row, column)"
                   ></div>
@@ -69,13 +88,35 @@
                 ></expand-dom>
               </template>
             </el-popover>
+            <template v-else>
+              <template v-if="!column.render">
+                <template v-if="column.formatter">
+                  <div
+                    v-html="column.formatter(scope.row, column)"
+                  ></div>
+                </template>
+                <template v-else>
+                  <div :title="scope.row[column.prop]">
+                    {{ scope.row[column.prop] }}
+                  </div>
+                </template>
+              </template>
+              <template v-else>
+                <expand-dom
+                  :column="column"
+                  :row="scope.row"
+                  :render="column.render"
+                  :index="index"
+                ></expand-dom>
+              </template>
+            </template>
           </template>
         </el-table-column>
       </template>
       <!--endregion-->
       <!--region 按钮操作组-->
       <el-table-column
-        v-if="Object.keys(operates).length > 0 "
+        v-if="Object.keys(operates).length > 0"
         ref="fixedColumn"
         :label="operates.columnName ? operates.columnName : '操作'"
         align="center"
@@ -100,7 +141,7 @@
                   :title="btn.title"
                   @click.native.prevent="btn.method(key, scope.row)"
                 >
-                <i v-if="btn.label">{{btn.label}}</i>
+                  <i v-if="btn.label">{{ btn.label }}</i>
                 </el-button>
               </div>
             </template>
@@ -135,10 +176,14 @@ export default {
       parentPageParams: {}, //父组件传过来的过滤参数,
       tableListNew: this.tableList,
       content: "",
-      tableId:""//生成唯一id
+      tableId: "" //生成唯一id
     };
   },
   props: {
+    showHeader: {
+      type: Boolean,
+      default: true
+    },
     url: {
       type: String,
       default: ""
@@ -192,22 +237,33 @@ export default {
   mounted() {
     let _this = this;
     this.tableId = this.guid();
-    this.$nextTick(function(){
+    this.$nextTick(function() {
+      //获取列表的高展示多少数据
+      _this.getTableListHeight();
       window.onresize = () => {
         //当窗口发生改变时触发
         _this.getTableListHeight();
       };
-    })
-    //获取列表的高展示多少数据
-    this.getTableListHeight();
+    });
   },
   computed: {},
   methods: {
-    S4(){
-      return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    S4() {
+      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
     },
-    guid(){
-      return ("table-"+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+this.S4()+this.S4());
+    guid() {
+      return (
+        "table-" +
+        this.S4() +
+        "-" +
+        this.S4() +
+        "-" +
+        this.S4() +
+        "-" +
+        this.S4() +
+        this.S4() +
+        this.S4()
+      );
     },
     //页面修改
     handleCurrentChange(currentPage) {
@@ -218,6 +274,7 @@ export default {
     //外部调用方法 重置pageNo 过滤数据
     queryTableListByParams(params) {
       this.parentPageParams = params;
+      this.currentPage = 1;
       this.parentPageParams.pageNo = 1;
       this.queryTableList();
     },
@@ -246,17 +303,20 @@ export default {
     },
     //获取列表的高展示多少数据
     getTableListHeight() {
-      let trHeigh=53;
+      let trHeigh = 53;
       //如果当前页是维保人员信息页的话，让行高为84
       //如果不是，行高为53
-      if(this.$router.currentRoute.fullPath=='/MaintenanceUnitInformation/MaintenancePersonnelInformation'){
-          if(document.body.clientWidth>1366){
-            trHeigh=101
-          }else{
-            trHeigh=84
-          }
+      if (
+        this.$router.currentRoute.fullPath ==
+        "/MaintenanceUnitInformation/MaintenancePersonnelInformation"
+      ) {
+        if (document.body.clientWidth > 1366) {
+          trHeigh = 101;
+        } else {
+          trHeigh = 84;
+        }
       }
-      let tableH = parseInt(($("#"+this.tableId).height() - 53) / trHeigh);
+      let tableH = parseInt(($("#" + this.tableId).height() - 53) / trHeigh);
       if (tableH) {
         this.pagesize = tableH;
       } else {
@@ -270,16 +330,18 @@ export default {
       }
     },
     rowStyle() {
-      let trHeigh=53;
-      if(this.$router.currentRoute.fullPath=='/MaintenanceUnitInformation/MaintenancePersonnelInformation'){
-          if(document.body.clientWidth>1366){
-           trHeigh=101
-          }else{
-           trHeigh=84
-          }
-
+      let trHeigh = 53;
+      if (
+        this.$router.currentRoute.fullPath ==
+        "/MaintenanceUnitInformation/MaintenancePersonnelInformation"
+      ) {
+        if (document.body.clientWidth > 1366) {
+          trHeigh = 101;
+        } else {
+          trHeigh = 84;
+        }
       }
-      return "height:"+trHeigh+"px;";
+      return "height:" + trHeigh + "px;";
     },
     cellStyle() {
       return "padding:0";
@@ -326,70 +388,93 @@ export default {
     },
     //表头渲染
     renderHeader(h, { column, $index }) {
-      if(column.label==="是否规范"){
+      if (column.label === "是否规范") {
         return h("span", [
           column.label,
-          h("el-popover", {
-            attrs: {
-              trigger: "click",
-              width:"650",
-              placement:"bottom-end",
-            }
-          },[
-            this.operation(h),
-            h('i',{
-              slot:"reference",
-              attrs:{
-                class:"maintenance-aroundNotice",
-                style:"color: #ffb156;width: .2rem;height: .2rem;display: inline-block;line-height: 15px;margin-left: .05rem;cursor: pointer;"
+          h(
+            "el-popover",
+            {
+              attrs: {
+                trigger: "click",
+                width: "650",
+                placement: "bottom-end"
               }
-            })
-          ])
+            },
+            [
+              this.operation(h),
+              h("i", {
+                slot: "reference",
+                attrs: {
+                  class: "maintenance-aroundNotice",
+                  style:
+                    "color: #ffb156;width: .2rem;height: .2rem;display: inline-block;line-height: 15px;margin-left: .05rem;cursor: pointer;"
+                }
+              })
+            ]
+          )
         ]);
-      }else{
+      } else {
         return h("span", [column.label]);
       }
     },
-    operation(h){
-      return h('pre',{
-        attrs:{
-          style:"font-family: Microsoft YaHei;"
-        }
-      },[
-        <div scoped-slot="content">
-          <h3 style='font-size:.14rem;font-weight: 800;color:#000;margin-top:.1rem;'>例行维保是否规范规则说明：</h3>
-          <p style="color:#000;font-size:.12rem;margin-top:.1rem;">1.本版本的例行维保暂时支持
-          <span style='color: #ff9e2f;'>【火灾自动报警系统】中的火灾探测器、手动报警按钮</span>
-          2种设备类型的维保测试过程管控。</p>
-          <p style="color:#000;font-size:.12rem;margin-top:.1rem;">2.例行维保过程中进行系统测试时，以监测中心接收到报警、启动、反馈等信号作为过程管控。</p>
-          <h3 style="margin-top: 10px;color: #ff9e2f;font-size:.14rem;">以下过程全部满足视为维保过程规范：</h3>
-          <p style='color: #ff9e2f;font-size:.12rem;margin-top:.1rem;'>1.在业主单位规定范围内维保。</p>
-          <p style='color: #ff9e2f;font-size:.12rem;margin-top:.1rem;'>2.反馈信号的测试设备类型的数量超过例行维保计划测试数量的80%。</p>
-        </div>
-      ]);
+    operation(h) {
+      return h(
+        "pre",
+        {
+          attrs: {
+            style: "font-family: Microsoft YaHei;"
+          }
+        },
+        [
+          <div scoped-slot="content">
+            <h3 style="font-size:.14rem;font-weight: 800;color:#000;margin-top:.1rem;">
+              例行维保是否规范规则说明：
+            </h3>
+            <p style="color:#000;font-size:.12rem;margin-top:.1rem;">
+              1.本版本的例行维保暂时支持
+              <span style="color: #ff9e2f;">
+                【火灾自动报警系统】中的火灾探测器、手动报警按钮
+              </span>
+              2种设备类型的维保测试过程管控。
+            </p>
+            <p style="color:#000;font-size:.12rem;margin-top:.1rem;">
+              2.例行维保过程中进行系统测试时，以监测中心接收到报警、启动、反馈等信号作为过程管控。
+            </p>
+            <h3 style="margin-top: 10px;color: #ff9e2f;font-size:.14rem;">
+              以下过程全部满足视为维保过程规范：
+            </h3>
+            <p style="color: #ff9e2f;font-size:.12rem;margin-top:.1rem;">
+              1.在业主单位规定范围内维保。
+            </p>
+            <p style="color: #ff9e2f;font-size:.12rem;margin-top:.1rem;">
+              2.反馈信号的测试设备类型的数量超过例行维保计划测试数量的80%。
+            </p>
+          </div>
+        ]
+      );
     }
   }
 };
 </script>
 <style lang="scss" scoped>
 .table {
-    height: calc(100% - 0.6rem);
-    width: 100%;
-    .el-table::before{
-      height: 0;
-    }
-   /deep/ .el-table__fixed-right::before, .el-table__fixed::before{
-      height: 0!important;
-    }
+  height: calc(100% - 0.6rem);
+  width: 100%;
+  .el-table::before {
+    height: 0;
+  }
+  /deep/ .el-table__fixed-right::before,
+  .el-table__fixed::before {
+    height: 0 !important;
+  }
   .el-table {
     height: 100%;
-    .el-table__body-wrapper{
+    .el-table__body-wrapper {
       height: 100%;
-
     }
-     /deep/ .is-scrolling-none{
-        height: 100%;
-      }
+    /deep/ .is-scrolling-none {
+      height: 100%;
+    }
     .table-head {
       background-color: #5f687f;
     }
@@ -402,7 +487,7 @@ export default {
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      i{
+      i {
         font-style: normal;
       }
       span {
@@ -433,7 +518,8 @@ export default {
   margin-top: 0.1rem;
 }
 /deep/.el-pagination .el-pager li:not(.disabled).active {
-  background-color: #f4f4f5;
+  // background-color: #f4f4f5;
+  background: rgba(255, 156, 80, 0.1);
   color: #ffb156;
   border: 0.01rem solid #ffb156;
 }
@@ -446,5 +532,8 @@ export default {
 }
 /deep/.el-table {
   font-size: 0.16rem;
+}
+/deep/.el-pagination .el-pager li:hover {
+  color: #ff9c50 !important;
 }
 </style>

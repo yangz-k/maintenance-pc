@@ -310,30 +310,7 @@ export default {
     },
     //下载附件
     handleEdit(index, row) {
-      // let $a = document.createElement("a");
-      // $a.setAttribute("href", api.forent_url.image_url + row.attachPath);
-      // $a.download = row.attachName;
-      // let evObj = document.createEvent("MouseEvents");
-      // evObj.initMouseEvent(
-      //   "click",
-      //   true,
-      //   true,
-      //   window,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   false,
-      //   false,
-      //   true,
-      //   false,
-      //   0,
-      //   null
-      // );
-      // $a.dispatchEvent(evObj);
       download(1, api.forent_url.image_url + row.attachPath,row.attachName);
-
     },
     //删除列表
     handleDelete(index, row) {

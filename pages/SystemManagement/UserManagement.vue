@@ -200,7 +200,7 @@
 				var that = this;
 //				sessionStorage.setItem("userInfo", JSON.stringify(that.userInfo));//保存回显信息
 				that.$router.push({
-					name: 'SystemManagement-UserManagement-addUser',
+					name: 'SystemManagement-UserManagementControl-addUser',
 					params: {
 
 					}
@@ -214,17 +214,15 @@
 			    name: "用户管理详情",//title name
 		            parName: "用户管理",//父级title name
 		            lightMenu: api.getGlobalVal("CmenuName").lightMenu + "-0",
-		            linkname: "SystemManagement-UserManagement-userInformation",
-		            path: "SystemManagement-UserManagement-userInformation"
+		            linkname: "SystemManagement-UserManagementControl-userInformation",
+		            path: "SystemManagement-UserManagementControl-userInformation"
 			    };
 			    _this.setDetailBreadcrumb(paramCrumb,true);
 			    //详情页面包屑 end
-
-				console.log(obj)
 				if(obj.column.label != "操作") {
 					if(obj.row) {
 							_this.$router.push({
-								name: 'SystemManagement-UserManagement-userInformation',
+								name: 'SystemManagement-UserManagementControl-userInformation',
 								params: {
 									userId: obj.row.id
 								}

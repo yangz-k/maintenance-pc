@@ -78,7 +78,7 @@
                 :key="index"
               >
                 <div class="leftFp_one div-flex align_center h100 cursor" @click="selectionPerson(item, index)">
-                  <img :src="item.headPortraitUrl" />
+                  <img :src="item.headPortraitUrl" :onerror="imgOnerror"/>
                   <div class="div_flex flex1 nameCon">
                   	<span class="name">{{ item.name }}</span>
 	                  <div>
@@ -116,7 +116,7 @@
               :key="index"
             >
               <div class="leftFp_one div-flex align_center h100" @click="noSelectionPerson(item, index)">
-	              <img :src="item.headPortraitUrl" />
+	              <img :src="item.headPortraitUrl" :onerror="imgOnerror"/>
 	              <span :title="item.name" class="check-name">{{ item.name }}</span>
 	              <span
 	                class="check-span el-icon-error"
@@ -160,6 +160,9 @@ export default {
       allUserList: "", //所有人员列表
       userCheckList: [], //选中的人员列表
       proprietorId:"",//点击需要操作的企业
+      imgOnerror:'this.src="' +
+        require("@/assets/img/main/weibao.png") +
+        '"',
       // 分配维保人员弹框结束
       // requestUrl: api.forent_url.maintenance_service_url + "/mservice/getServiceRelationshipList",
       requestUrl: api.forent_url.maintenance_service_url + "/serverUnit/getServiceRelationshipList",
@@ -268,6 +271,7 @@ export default {
         api.forent_url.maintenance_service_url +
         "/serverUnit/getUserDistributionList";
       let params = {
+        //t: Date.parse(new Date()) / 1000,
         id: this.orgId,
         proprietorId: row.proprietorId
       };
@@ -370,6 +374,7 @@ export default {
         let _ids = ids.substring(0, ids.length - 1);
         let serviceUrl = api.forent_url.maintenance_service_url+"/serverUnit/updateUserRel";
         let params = {
+          //t: Date.parse(new Date()) / 1000,
           ids:ids,
           proprietorId:this.proprietorId,
           orgId:this.orgId
@@ -433,13 +438,14 @@ export default {
     float: left;
   }
   .tcTitle {
-    font-size: 16px;
-    font-family: MicrosoftYaHei;
+    font-size: .14rem;
+    font-family: 'MicrosoftYaHeiLight';
     font-weight: bold;
-    color: rgba(51, 51, 51, 1);
+    color: #8C8C8C;
+    line-height: .40rem;
   }
   .buleSpan {
-    color: #0a7bc7;
+    color: #FF6822;
   }
   .certain {
     bottom: 20px;
@@ -466,26 +472,29 @@ export default {
     color: #5f687f;
     border-bottom: 2px solid #eef1f4;
     .leftFp_one {
+      cursor: pointer;
      .nameCon{
      	flex-direction: column;
      	overflow: hidden;
      }
       & > img {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
-        margin:0 .15rem 0 0;
+        margin-right: .25rem;
       }
       .name {
         display: block;
-        font-size: 0.18rem;
+        font-size: 0.16rem;
+        color: #5F687F;
         overflow: hidden;
 		    text-overflow: ellipsis;
 		    white-space: nowrap;
-		   width: 2.72rem;
-		   flex:1;
+        width: 100%;
+        flex:1;
       }
       .allocating {
+        font-family: 'HiraginoSansGB-W3';
         display: block;
         color: #ff951b;
         font-size: 0.16rem;
@@ -512,10 +521,10 @@ export default {
     .leftFp_one {
       cursor: pointer;
       img {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
-        margin:0 .15rem;
+        margin:0.25rem;
       }
       .check-name {
         flex:1;
@@ -526,6 +535,24 @@ export default {
         width: 100%;
       }
     }
+  }
+  // 按钮
+  .wb-clear,.wb-sure{
+    width:.88rem;
+    height:.36rem;
+    background:#FFFFFF;
+    border-radius:18px;
+    font-size:18px;
+    font-family:'HiraginoSansGB-W3';
+    font-weight:normal;
+  }
+  .wb-clear{
+    color: #5F687F;
+    border:1px solid #5F687F;
+  }
+  .wb-sure{
+     color: #FF6822;
+    border:1px solid #FF6822;
   }
 }
 /deep/.el-dialog__body {

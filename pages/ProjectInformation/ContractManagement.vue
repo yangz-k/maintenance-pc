@@ -161,7 +161,7 @@
         </el-col>
         <el-col class="system-col div-flex"
           ><span></span><span>服务合同：</span>
-          <el-button type="primary" @click="uploadFile()" v-if="!isSee"
+          <el-button class='el-button AddAttachments' type="primary" @click="uploadFile()" v-if="!isSee"
             >上传<i class="el-icon-upload el-icon--right"></i
           ></el-button>
           <input
@@ -533,10 +533,10 @@ export default {
     checkedClick(id) {
       var checked = $("#" + id).is(":checked");
       if (checked) {
-        $(".system-equipment ." + id + " span").css("color", "#ff951b");
-        $(".system-equipment ." + id + " b").css("color", "#ff951b");
+        $(".system-equipment ." + id + " span").css("color", "#FF6822");
+        $(".system-equipment ." + id + " b").css("color", "#FF6822");
       } else {
-        $(".system-equipment ." + id + " span").css("color", "#606266");
+        $(".system-equipment ." + id + " span").css("color", "#454545");
         $(".system-equipment ." + id + " b").css("color", "#9f9f9f");
       }
     },
@@ -602,28 +602,7 @@ export default {
     },
     //下载附件
     downloadFile(fileObj) {
-      var $a = document.createElement("a");
-      $a.setAttribute("href", api.forent_url.image_url + fileObj.attachPath);
-      $a.download = fileObj.name;
-      var evObj = document.createEvent("MouseEvents");
-      evObj.initMouseEvent(
-        "click",
-        true,
-        true,
-        window,
-        0,
-        0,
-        0,
-        0,
-        0,
-        false,
-        false,
-        true,
-        false,
-        0,
-        null
-      );
-      $a.dispatchEvent(evObj);
+      download(1, api.forent_url.image_url + fileObj.attachPath,fileObj.name);
     },
     //保存合同信息
     saveContract() {
@@ -725,7 +704,6 @@ export default {
       if (attachMent && attachMent.length > 0) {
         for (let i = 0; i < attachMent.length; i++) {
           download(1, api.forent_url.image_url + attachMent[i].attachPath,attachMent[i].attachName);
-
           // let $a = document.createElement("a");
           // $a.setAttribute(
           //   "href",
@@ -756,7 +734,7 @@ export default {
     },
     // 删除
     handleDel(index, row) {
-      this.$confirm("确定要删除这条信息吗？", "提示", {
+      this.$confirm("确定要删除这条合同吗？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -825,7 +803,7 @@ export default {
       margin-left: -0.05rem;
     }
     .add-contract {
-      width: 0.8rem;
+      width: 0.88rem;
       background-color: #5f687f;
       color: #fff;
       border: 0;
@@ -833,6 +811,7 @@ export default {
       margin-left: 0.1rem;
       margin-right: 0.2rem;
       cursor: pointer;
+      height:.36rem
     }
     .datePicker {
       display: inline-block;
@@ -856,6 +835,20 @@ export default {
   }
 
   .add-contract-dialog {
+  	.AddAttachments{
+	  		    width: 1.16rem;
+	    background: #FF6822;
+	    border-radius: 18px;
+	    height: .36rem;
+	    line-height: .36rem;
+	    text-align: center;
+	    font-size: .16rem;
+	    font-family: 'HiraginoSansGB-W3';
+	    font-weight: normal;
+	    color: #FFFFFF;
+	    border-color:#FF6822;
+  	}
+
     .system-col {
       display: flex;
     }
@@ -902,7 +895,7 @@ export default {
       .system-equipment > div {
         /*float: left;*/
         width: 50%;
-        min-width: 44px;
+        min-width: 3.3rem;
         /*margin-top: 3px;*/
         /*line-height: 13px;*/
         height: 30px;
@@ -943,6 +936,7 @@ export default {
 }
 /deep/.el-dialog__body {
   font-size: 0.16rem;
+  font-family: "microsoft yahei";
 }
 /deep/.el-table .el-table__row {
   cursor: pointer;

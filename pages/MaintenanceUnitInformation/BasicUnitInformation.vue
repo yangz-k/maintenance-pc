@@ -5,7 +5,7 @@
         <!-- 面包屑 -->
         <Title style="width:100%" />
     </el-row>
-    <div class="contentCon " v-show="showMain" >
+    <div class="contentCon " v-if="showMain" >
       <div class="contentCon_con " >
         <div class="title">
           企业信息
@@ -21,59 +21,59 @@
             <span>基本信息</span>
           </div>
           <ul class="table">
-            <li>
+            <li class="width_35">
               <span class="prop">单位编号 :</span>
               <span class="con">{{tableDate.id}}</span>
             </li>
-            <li>
+            <li class="width_65">
               <span class="prop">单位名称 :</span>
               <span class="con">{{tableDate.maintenanceName}}</span>
             </li>
-            <li>
+            <li class="width_35">
               <span class="prop">合作模式 :</span>
               <span class="con">{{tableDate.serviceUnitJoinModel}}</span>
             </li>
-            <li>
+            <li class="width_65">
               <span class="prop">运营中心 :</span>
               <span class="con">{{tableDate.subCenterName}}</span>
             </li>
-            <li>
+            <li class="width_35">
               <span class="prop">服务期始 :</span>
               <span class="con">{{tableDate.serviceUnitStartDate}}</span>
             </li>
-            <li>
+            <li class="width_65">
               <span class="prop">服务期止 :</span>
               <span class="con">{{tableDate.serviceUnitEndDate}}</span>
             </li>
-            <li>
+            <li class="width_35">
               <span class="prop">企业地址 :</span>
               <span class="con">{{tableDate.address}}</span>
             </li>
-            <li>
+            <li class="width_65">
               <span class="prop">法人姓名 :</span>
               <span class="con">{{tableDate.legalperson}}</span>
             </li>
-            <li>
+            <li class="width_35">
               <span class="prop">联 &nbsp;系&nbsp;人 :</span>
               <span class="con">{{tableDate.conact}}</span>
             </li>
-            <li>
+            <li class="width_65">
               <span class="prop">法人电话 :</span>
               <span class="con">{{tableDate.legalpersonTel}}</span>
             </li>
-            <li>
+            <li class="width_35">
               <span class="prop">联系电话 :</span>
               <span class="con">{{tableDate.conactPhone}}</span>
             </li>
-            <li>
+            <li class="width_65">
               <span class="prop">服务电话 :</span>
               <span class="con">{{tableDate.serviceTel}}</span>
             </li>
-            <li>
+            <li class="width_35">
               <span class="prop">在职人数 :</span>
               <span class="con">{{tableDate.activeEmployees}}</span>
             </li>
-            <li>
+            <li class="width_65">
               <span class="prop">服务区域 :</span>
               <span class="con">{{tableDate.serviceRange}}</span>
             </li>
@@ -86,14 +86,14 @@
           </div>
         </div>
         <div class="banner" >
-          <div class="pd20rem"  v-if="dataImg.length<1"><img :src="errorImg" class="errorImg" alt="" srcset=""> </div>
-          <div class="pd20rem"  v-if="dataImg.length===1"><img :src="dataImg[0].src" class="errorImg" @click="clickImg($event)" alt="" srcset=""> </div>
-          <el-carousel
+          <!-- <div class="pd20rem"  v-if="dataImg.length<1"><img :src="errorImg" class="errorImg" alt="" srcset=""> </div>
+          <div class="pd20rem"  v-if="dataImg.length===1"><img :src="dataImg[0].src" class="errorImg" @click="clickImg($event)" alt="" srcset=""> </div> -->
+          <!-- <el-carousel
             :interval="0"
             type="card"
             height="2rem"
             :initial-index="1 ? 1 : 0"
-            arrow="always"
+            :arrow="dataImg.length > 3 ? 'always' : 'never'"
             :indicator-position="dataImg.length > 3 ? 'outside' : 'none'"
             v-if="dataImg.length>1"
             :loop='false'
@@ -104,9 +104,9 @@
                 {{ item.title }}
               </p>
             </el-carousel-item>
-          </el-carousel>
+          </el-carousel> -->
 
-          <!-- <div class="pd20rem"  v-if="dataImg.length<1"><img :src="errorImg" class="errorImg" alt="" srcset=""> </div>
+          <div class="pd20rem"  v-if="dataImg.length<1"><img :src="errorImg" class="errorImg" alt="" srcset=""> </div>
           <div class="pd20rem"  v-if="dataImg.length===1"><img :src="dataImg[0].src" class="errorImg" @click="clickImg($event)" alt="" srcset=""> </div>
           <div style="position: relative; padding: 0 0.5rem;" v-if="dataImg.length>1">
             <div class="swiper-container" style="margin: 0 auto;">
@@ -114,8 +114,8 @@
                 <div
                   class="wb-plan-item swiper-slide swiper-no-swiping"
                   style="overflow: hidden;"
-                  v-for="item in dataImg" 
-                  :key="item.value"
+                  v-for="(item, index) in dataImg"
+                  :key="index"
                 >
                   <div class="swiper-img_block">
                     <img
@@ -123,21 +123,21 @@
                       :src="item.src"
                     >
                   </div>
-                  <p class="swiper-p_block">{{item.title}}</p>
+                  <p class="swiper-p_block white-space" :title="item.title">{{item.title}}</p>
                 </div>
               </div>
             </div>
             <div
               class="maintenance-pullWest leftArrow prohibit"
               @click="prev()"
-              v-if="dataImg.length > 4"
+              v-if="dataImg.length > 5"
             ></div>
             <div
               class="maintenance-pullWest rightArrow"
               @click="next()"
-              v-if="dataImg.length > 4"
+              v-if="dataImg.length > 5"
             ></div>
-          </div> -->
+          </div>
 
 
         </div>
@@ -175,9 +175,9 @@ export default {
       dataImg: [],
       errorImg:require('@/assets/img/BasicUnitInformation/credentials_error.png'),
       showMain: true,
-      // mySwiper: null,
-      // step: 4,
-      // flag: true
+      mySwiper: null,
+      step: 5,
+      flag: true
     };
   },
   mounted() {
@@ -194,70 +194,72 @@ export default {
     });
   },
   methods: {
-    // prev() {
-    //   if (this.flag && this.step > 4) {
-    //     this.flag = false;
-    //     this.mySwiper.swipePrev();
-    //   }
-    // },
-    // next() {
-    //   if (this.flag && this.step < this.dataImg.length) {
-    //     this.flag = false;
-    //     this.mySwiper.swipeNext();
-    //   }
-    // },
-    // initSwiper() {
-    //   let _this = this;
-    //   if (_this.mySwiper) {
-    //     _this.mySwiper.reInit();
-    //   } else {
-    //     _this.$nextTick(function() {
-    //       _this.mySwiper = new Swiper(".swiper-container", {
-    //         slidesPerView: 4,
-    //         noSwiping: true,
-    //         initialSlide: 0,
-    //         calculateHeight: true,
-    //         onSlidePrev: function(swiper) {
-    //           if (_this.step < 5) {
-    //             $(".leftArrow").addClass("prohibit");
-    //           } else if (_this.step == 5) {
-    //             $(".leftArrow").addClass("prohibit");
-    //             $(".rightArrow").removeClass("prohibit");
-    //             _this.step--;
-    //           } else {
-    //             $(".leftArrow").removeClass("prohibit");
-    //             $(".rightArrow").removeClass("prohibit");
-    //             _this.step--;
-    //           }
-    //           console.log("_this.step", _this.step);
-    //         },
-    //         onSlideNext: function(swiper) {
-    //           if (_this.step > _this.dataImg.length - 1) {
-    //             $(".rightArrow").addClass("prohibit");
-    //           } else if (
-    //             _this.step ==
-    //             _this.dataImg.length - 1
-    //           ) {
-    //             $(".rightArrow").addClass("prohibit");
-    //             $(".leftArrow").removeClass("prohibit");
-    //             _this.step++;
-    //           } else {
-    //             $(".leftArrow").removeClass("prohibit");
-    //             $(".rightArrow").removeClass("prohibit");
-    //             _this.step++;
-    //           }
-    //           console.log("_this.step", _this.step);
-    //         },
-    //         onSlideChangeEnd: function(swiper) {
-    //           _this.flag = true;
-    //         },
-    //         onInit: function(swiper) {
-    //           // swiper.swipeNext()
-    //         }
-    //       });
-    //     });
-    //   }
-    // },
+    prev() {
+      let _this = this;
+      if (_this.flag && _this.step > 5) {
+        _this.flag = false;
+        _this.mySwiper.swipePrev();
+      }
+    },
+    next() {
+      let _this = this;
+      if (_this.flag && _this.step < _this.dataImg.length) {
+        _this.flag = false;
+        _this.mySwiper.swipeNext();
+      }
+    },
+    initSwiper() {
+      let _this = this;
+      if (_this.mySwiper) {
+        _this.mySwiper.reInit();
+      } else {
+        _this.$nextTick(function() {
+          _this.mySwiper = new Swiper(".swiper-container", {
+            slidesPerView: 5,
+            noSwiping: true,
+            initialSlide: 0,
+            calculateHeight: true,
+            onSlidePrev: function(swiper) {
+              if (_this.step < 6) {
+                $(".leftArrow").addClass("prohibit");
+              } else if (_this.step == 6) {
+                $(".leftArrow").addClass("prohibit");
+                $(".rightArrow").removeClass("prohibit");
+                _this.step--;
+              } else {
+                $(".leftArrow").removeClass("prohibit");
+                $(".rightArrow").removeClass("prohibit");
+                _this.step--;
+              }
+              console.log("_this.step", _this.step);
+            },
+            onSlideNext: function(swiper) {
+              if (_this.step > _this.dataImg.length - 1) {
+                $(".rightArrow").addClass("prohibit");
+              } else if (
+                _this.step ==
+                _this.dataImg.length - 1
+              ) {
+                $(".rightArrow").addClass("prohibit");
+                $(".leftArrow").removeClass("prohibit");
+                _this.step++;
+              } else {
+                $(".leftArrow").removeClass("prohibit");
+                $(".rightArrow").removeClass("prohibit");
+                _this.step++;
+              }
+              console.log("_this.step", _this.step);
+            },
+            onSlideChangeEnd: function(swiper) {
+              _this.flag = true;
+            },
+            onInit: function(swiper) {
+              // swiper.swipeNext()
+            }
+          });
+        });
+      }
+    },
     clickImg(e) {
       this.showImg = true; // 获取当前图片地址
       this.imgSrc = e.currentTarget.src;
@@ -279,22 +281,14 @@ export default {
           this.dataImg = [];
           if (res.code == "success") {
             self.tableDate = res.data;
-            // res.data.credentials = [{credentialId: "020573be7eb64ba1b7e3afb159c9f072", attachmentName: "消防设施维护保养检测机构二级资质",attachmentUrl: "org/credentials/340104FWJG201806250001/020573be7eb64ba1b7e3afb159c9f072.jpg"},
-            //                         {credentialId: "531f981c7f48409b88aa3eca869c665e", attachmentName: "消防设施维护保养检测机构三级资质",attachmentUrl: "org/credentials/340104FWJG201806250001/531f981c7f48409b88aa3eca869c665e.png"},
-            //                         {credentialId: "31743afa987c482dafc42cb71c4affba", attachmentName: "消防设施维护保养检测机构三级资质",attachmentUrl: "org/credentials/340104FWJG201806250001/31743afa987c482dafc42cb71c4affba.jpeg"},
-            //                         {credentialId: "b26ff8aa0b604934b3e4b9f9e3ecdcb2", attachmentName: "消防安全评估机构一级资质",attachmentUrl: "org/credentials/340104FWJG201806250001/b26ff8aa0b604934b3e4b9f9e3ecdcb2.jpg"},
-            //                         {credentialId: "020573be7eb64ba1b7e3afb159c9f072", attachmentName: "消防设施维护保养检测机构二级资质",attachmentUrl: "org/credentials/340104FWJG201806250001/020573be7eb64ba1b7e3afb159c9f072.jpg"},
-            //                         {credentialId: "531f981c7f48409b88aa3eca869c665e", attachmentName: "消防设施维护保养检测机构三级资质",attachmentUrl: "org/credentials/340104FWJG201806250001/531f981c7f48409b88aa3eca869c665e.png"},
-            //                         {credentialId: "31743afa987c482dafc42cb71c4affba", attachmentName: "消防设施维护保养检测机构三级资质",attachmentUrl: "org/credentials/340104FWJG201806250001/31743afa987c482dafc42cb71c4affba.jpeg"},
-            //                         {credentialId: "b26ff8aa0b604934b3e4b9f9e3ecdcb2", attachmentName: "消防安全评估机构一级资质",attachmentUrl: "org/credentials/340104FWJG201806250001/b26ff8aa0b604934b3e4b9f9e3ecdcb2.jpg"},];
             for (let i = 0; i < res.data.credentials.length; i++) {
               const title = res.data.credentials[i].attachmentName;
               const src =
                 api.forent_url.image_url +
                 res.data.credentials[i].attachmentUrl;
               this.dataImg.push({ title, src });
-              // this.initSwiper();
             }
+            this.initSwiper();
           }
         });
     },
@@ -322,7 +316,12 @@ export default {
     width: 100%;
     height: 100%;
   }
-
+	.width_35{
+		width:35%!important;
+	}
+	.width_65{
+		width:65%!important;
+	}
   .contentCon {
     padding: .2rem;
     width: 100%;
@@ -338,7 +337,7 @@ export default {
       line-height: 0.5rem;
       display: flex;
       justify-content: space-between;
-      background: #f7f7f7;
+      background-color: rgba(150,150,150,0.08);
       color: #677089;
       padding: 0 8px 0 19px;
       font-size: 0.21rem;
@@ -350,6 +349,7 @@ export default {
       width: 100%;
       height: 3.4rem;
       margin-top: 0.2rem;
+      font-family:'MicrosoftYaHei';
       .titleCon {
         // margin-top: 20px;
         padding-left: 0.19rem;
@@ -357,12 +357,12 @@ export default {
         height: 0.21rem;
         color: #677089;
         font-weight: bold;
-        font-size: 0.19rem;
-        line-height: 0.19rem;
+        font-size: 0.20rem;
+        line-height: 0.20rem;
         // vertical-align: middle;
         background: #fff;
         i {
-          display: inline-block;
+          display: block;
           float: left;
           // vertical-align: middle;
           margin-top: 0.01rem;
@@ -397,7 +397,8 @@ export default {
       font-size: 0.19rem;
       background: #fff;
       i {
-        display: inline-block;
+        display: block;
+        float: left;
         margin-top: 0.01rem;
         margin-right: 0.1rem;
         height: 0.18rem;
@@ -414,14 +415,13 @@ export default {
     float: left;
     list-style: none;
     width: 90%;
-    height: 2.4rem;
-    margin: 0.15rem 0 0 0.3rem;
-    padding: 0;
+    padding: 0.15rem 0 0 0.3rem;
     li {
-      display: inline-block;
+      display: block;
       float: left;
       width: 50%;
       height: 0.4rem;
+      line-height: 0.4rem;
       font-size: 0.16rem;
       // font-weight: bold;
       text-align: left;
@@ -439,6 +439,7 @@ export default {
   }
   .banner {
     position: relative;
+    margin-top: 0.5rem;
   }
   /deep/ .el-carousel__arrow {
     width: 0.6rem;
@@ -447,12 +448,13 @@ export default {
     font-size: 0.6rem;
     font-weight: bold;
     color: #dbdbdb;
+    top:45%;
   }
   @media all and (-ms-high-contrast: none),
   (-ms-high-contrast: active) {
     /deep/ .el-carousel__arrow {
       height: 0.8rem;
-    } 
+    }
   }
   /deep/ .el-carousel__arrow:hover {
     color: #ff6722;
@@ -507,7 +509,7 @@ export default {
     height: 0.5rem;
     line-height: 0.5rem;
     &:hover{
-      color:#409EFF;
+      color:#FF6822;
     }
   }
   .swiper-slide {
@@ -538,11 +540,11 @@ export default {
   }
   .leftArrow {
     left: 5px;
-    color: #5f687f;
+    color: #FF6722;
   }
   .rightArrow {
     right: 5px;
-    color: #5f687f;
+    color: #FF6722;
     transform: rotate(180deg);
     -ms-transform: rotate(180deg);
     -moz-transform: rotate(180deg);
@@ -552,7 +554,7 @@ export default {
     // transform-origin: center center;
   }
   .prohibit {
-    color: #dbdbdb;
+    color: #DBDBDB;
     cursor: default;
   }
 </style>

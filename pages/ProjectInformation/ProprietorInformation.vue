@@ -16,7 +16,7 @@
           >
             <el-col :span="12" class="div-flex align_center">
               <div class="m-l2rem div-flex align_center">
-                <label class="fs18px color_mo">单位来源：</label>
+                <label class="fs16px color_mo">单位来源：</label>
                 <el-select
                   clearable
                   v-model="source_value"
@@ -338,6 +338,9 @@ export default {
     },
     // 切换tab
     handleClick(tab, event) {
+      this.source_value = '';
+      this.proprietorName = '';
+      this.unitName = '';
       this.tabName = this.activeName;
       if (tab.name == "first") {
         this.getUintIfo(); //服务中
@@ -395,26 +398,24 @@ export default {
       );
     },
     rowClick(obj) {
-      let _this = this;
-      //详情页面包屑();
-      let paramCrumb = {
-        name: "业主信息详情", //title name
-        parName: "业主信息", //父级title name
-        lightMenu: api.getGlobalVal("CmenuName").lightMenu + "-0",
-        linkname:
-          "ProjectInformation-ProprietorInformation-ProprietorInformationDetail",
-        path:
-          "ProjectInformation-ProprietorInformation-ProprietorInformationDetail"
-      };
-      _this.setDetailBreadcrumb(paramCrumb, _this.isLevelDetail);
-      //详情页面包屑 end
-
+        let _this = this;
+        //详情页面包屑();
+        let paramCrumb = {
+          name: "业主信息详情",//title name
+              parName: "业主信息",//父级title name
+              lightMenu: api.getGlobalVal("CmenuName").lightMenu + "-0",
+              linkname: "ProjectInformation-ProprietorInformationControl-ProprietorInformationDetail",
+              path: "ProjectInformation-ProprietorInformationControl-ProprietorInformationDetail"
+        };
+        _this.setDetailBreadcrumb(paramCrumb,true);
+        //详情页面包屑 end
+        
       //点击服务中列表
       obj.row.tabName = this.activeName;
       if (obj.column.label != "操作") {
         this.$router.push({
           name:
-            "ProjectInformation-ProprietorInformation-ProprietorInformationDetail",
+            "ProjectInformation-ProprietorInformationControl-ProprietorInformationDetail",
           params: obj.row
         });
       }
@@ -425,7 +426,7 @@ export default {
       if (obj.column.label != "操作") {
         this.$router.push({
           name:
-            "ProjectInformation-ProprietorInformation-ProprietorInformationDetail",
+            "ProjectInformation-ProprietorInformationControl-ProprietorInformationDetail",
           params: obj.row
         });
       }
@@ -433,7 +434,7 @@ export default {
     addUnit() {
       this.$router.push({
         name:
-          "ProjectInformation-ProprietorInformation-ProprietorInformationAdd"
+          "ProjectInformation-ProprietorInformationControl-ProprietorInformationAdd"
       });
     },
     //添加维保合同之后的回调
@@ -486,7 +487,7 @@ export default {
   background-color: #fff;
 }
 .color_mo {
-  color: #606266;
+  color: #43495A;
 }
 .m-r2rem {
   margin-right: 0.2rem;

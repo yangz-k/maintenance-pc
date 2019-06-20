@@ -101,7 +101,7 @@
         </el-row>
       </el-scrollbar>
       <div class="confirm-button-div div-flex all_center" style="text-align: center;margin-top: .1rem;">
-      	<el-button class="wb-clear" style="margin-right: .15rem;" @click="dialogFormVisible=false" round>取 消</el-button>
+      	<el-button class="wb-clear" style="margin-right: .36rem;" @click="dialogFormVisible=false" round>取 消</el-button>
         <el-button
           class="wb-sure"
           round
@@ -372,13 +372,14 @@ export default {
     float: left;
   }
   .tcTitle {
-    font-size: 16px;
-    font-family: MicrosoftYaHei;
+    font-size: .14rem;
+    font-family: 'MicrosoftYaHeiLight';
     font-weight: bold;
-    color: rgba(51, 51, 51, 1);
+    color: #8C8C8C;
+    line-height: .40rem;
   }
   .buleSpan {
-    color: #0a7bc7;
+    color: #FF6822;
   }
   .certain {
     bottom: 20px;
@@ -411,14 +412,15 @@ export default {
      	overflow: hidden;
      }
       & > img {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
-        margin-right: .15rem;
+        margin-right: .25rem;
       }
       .name {
         display: block;
-        font-size: 0.18rem;
+        font-size: 0.16rem;
+        color: #5F687F;
         overflow: hidden;
 		    text-overflow: ellipsis;
 		    white-space: nowrap;
@@ -426,6 +428,7 @@ export default {
         flex:1;
       }
       .allocating {
+        font-family: 'HiraginoSansGB-W3';
         display: block;
         color: #ff951b;
         font-size: 0.16rem;
@@ -452,10 +455,10 @@ export default {
     .leftFp_one {
       cursor: pointer;
       img {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
-        margin:0 .15rem;
+        margin:0.25rem;
       }
       .check-name {
         flex:1;
@@ -466,6 +469,24 @@ export default {
         width: 100%;
       }
     }
+  }
+  // 按钮
+  .wb-clear,.wb-sure{
+    width:.88rem;
+    height:.36rem;
+    background:#FFFFFF;
+    border-radius:18px;
+    font-size:18px;
+    font-family:'HiraginoSansGB-W3';
+    font-weight:normal;
+  }
+  .wb-clear{
+    color: #5F687F;
+    border:1px solid #5F687F;
+  }
+  .wb-sure{
+     color: #FF6822;
+    border:1px solid #FF6822;
   }
 }
 /deep/.el-dialog__body {

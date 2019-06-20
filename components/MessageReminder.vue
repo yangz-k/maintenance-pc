@@ -53,7 +53,7 @@ export default {
         messageMonitoring () {
             let _this = this;
             let orgCode = api.getGlobalVal("maintenance_userObj").orgCode;
-            if (this.stompClient.connected) {
+            if (this.stompClient && this.stompClient.connected && orgCode) {
                 this.stompClient.subscribe(
                     '/topic/' + orgCode + '/system_notice',
                     function(greeting) {

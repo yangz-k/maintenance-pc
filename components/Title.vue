@@ -14,6 +14,7 @@ import api from "~/config/http";
 import {getStorage} from '~/utils/storage';
 import mixin from "~/mixin/mixin";
 export default {
+  inject: ['reload'],
   mixins: [mixin],
   data() {
     return {
@@ -23,6 +24,10 @@ export default {
       storageMenulist: [],
       curMenulist: [],
       level: 0,
+      backCount: 0,
+      whiteList: [
+        'RoutineMaintenancePlanningControl-ProprietorPlanList'
+      ],
       rootnodeName: '',
       levelDetail: null,
       curpath: this.$route.path
@@ -36,31 +41,121 @@ export default {
   },
   watch: {
       $route() {
-          this.getBreadcrumb()
+        
+        //this.browserBackEvent();
+        //this.getBreadcrumb();
       }
   },
   created(){
       //
   },
+  destroyed(){
+    window.removeEventListener('popstate', this.goHome, false);
+  },
   methods:{
+      goHome(){
+        this.$router.replace({path: '/'});
+        //replace替换原路由，作用是避免回退死循环
+      },
+      updateTitle() {
+        //debugger
+        let pageParams= api.getGlobalVal("pageParams");
+        let paramCrumb = {
+          name: "例行维保计划制定列表",//title name
+              parName: "例行维保计划制定",//父级title name
+              lightMenu:  "4-1-0",
+              linkname: "MaintenanceManagement-RoutineMaintenancePlanningControl-ProprietorPlanList",
+              path: "MaintenanceManagement-RoutineMaintenancePlanningControl-ProprietorPlanList"
+        };
+        this.setDetailBreadcrumb(paramCrumb,true);
+        /*this.$router.replace({
+          name:
+            "MaintenanceManagement-RoutineMaintenancePlanningControl-ProprietorPlanList",
+          params: pageParams
+        });*/
+      },
+      browserBackEvent() {
+        //浏览器的回退事件，联动导航菜单和面包屑；
+        //debugger
+        //console.log('browserBackEvent-----:');
+        let _key,
+          _index,
+          listAll,
+          that = this;
+        if (window.history) {
+          //debugger
+          $(".el-submenu .el-submenu__title").css("background", "transparent");
+          window.addEventListener("popstate", function(e) {
+            if(that.backCount!==0)return;
+            let pathname = window.location.pathname;
+            let pathnameArr = pathname.split("/").slice(-2);
+            let _pathname = pathnameArr[0] + "-" + pathnameArr[1]; //.replace("/","-")
+            listAll = that.storageMenulist;
+            //debugger
+              //console.log(_pathname)
+            //if(that.whiteList.includes(_pathname)){
+            if(that.whiteList.includes('RoutineMaintenancePlanningControl-ProprietorPlanList')){
+              //window.removeEventListener('popstate', that.childGoBack, false);
+              that.updateTitle();
+              that.reload();
+              //return;
+            }
+            if (_pathname === "main-main") {
+              api.setGlobalVal("CmenuName", "0");
+              that.lightMenu = "0";
+            } else {
+              listAll.forEach(function(item, index) {
+                if (item.children.length > 0) {
+                  item.children.forEach(function(ele, key) {
+                    if (ele.resAlias === _pathname) {
+                      api.setGlobalVal(
+                        "CmenuName",
+                        JSON.stringify({
+                          name: ele.resName,
+                          parName: item.resName,
+                          lightMenu: index + "-" + key
+                        })
+                      );
+                      that.lightMenu = index + "-" + key;
+                      //debugger
+
+                      that.levelList = [];//先清空
+                      that.CmenuName = api.getGlobalVal("CmenuName");
+                      that.lightMenuArr = that.CmenuName ?  that.CmenuName.lightMenu.split('-') : [];
+
+                      that.curMenulist = that.storageMenulist ? that.storageMenulist : [];
+                      //console.log('getBreadcrumb-----that.curMenulist:'+JSON.stringify(that.curMenulist));
+                      that.levelFilter(that.curMenulist,that.level);
+                      
+                        //console.log('browserBackEvent-----that.levelList:'+JSON.stringify(that.levelList));
+                        ++that.backCount;
+                        that.reload();
+
+
+                    }
+                  });
+                }
+              });
+            }
+            /*setTimeout(function() {
+              $(".is-opened .el-submenu__title").css("background", "#313a50");
+            }, 300);*/
+          });
+        }
+        //console.log('befor end --browserBackEvent-----that.levelList:'+JSON.stringify(that.levelList));
+      },
       addLevelDetail(len){
-        let _this = this; 
+        let _this = this;
         //console.log('addLevelDetail----curLightMenuLen:'+len);
         _this.levelDetail = api.getGlobalVal("LevelDetail");
-
-        //console.log('_this.levelDetail----_this.levelDetail:'+JSON.stringify(_this.levelDetail));
-        //console.log('push前----__this.levelList:'+JSON.stringify(_this.levelList));
 
         if(len >2 && _this.levelDetail){//len >2 表示是详情页级别页面
           //_this.levelList.push(_this.levelDetail);
           _this.addLevelArr(_this.levelList,_this.levelDetail);
         }
-
-        //console.log('push后--addLevelDetail----levelList:'+JSON.stringify(_this.levelList)); 
-
       },
       breadcrumbClick (item){
-        let _this = this;  
+        let _this = this;
         //debugger
         _this.curMenulist = _this.storageMenulist ? _this.storageMenulist : [];
         _this.levelList = [];//先清空
@@ -77,8 +172,6 @@ export default {
             lightMenu: item.lightMenu
           })
         );
-        
-        //console.log('_-------api.getGlobalVal("CmenuName"):'+JSON.stringify(api.getGlobalVal("CmenuName")));
 
         _this.$router.push({
             name: item.name ? item.name  : "Building"
@@ -88,13 +181,13 @@ export default {
       levelFilter (item,level){
         let _this = this;
         //debugger;
-        
+
           let len = _this.lightMenuArr && _this.lightMenuArr.length;
           let parent = _this.curMenulist[_this.lightMenuArr[0]];
           let rootnodeRoute = "";
           let firstchildRoute = "";
           if(level>=len)return;
-          
+
           parent = item[_this.lightMenuArr[level]]//level是下标
           //parent = item[ele];//ele是菜单列表的下标
           if(level==0){
@@ -126,7 +219,7 @@ export default {
 
                 let curName = item[_this.lightMenuArr[level]].resAlias;
                 let curlightMenu = _this.lightMenuArr[0]+"-"+_this.lightMenuArr[level];
-                //console.log('--levelFilter--curlightMenu:',curlightMenu); 
+                //console.log('--levelFilter--curlightMenu:',curlightMenu);
                 let curLevelItem = {
                     name: curName,
                     lightMenu:curlightMenu,
@@ -136,15 +229,15 @@ export default {
                 };
                 //_this.levelList.push(curLevelItem);
                 _this.addLevelArr(_this.levelList,curLevelItem);
-                
-              
+
+
               if( parent.children.length != 0){
                 _this.curMenulist = parent.children;
                 _this.levelFilter(parent.children,++level);
               }
-            
-          }//level下标为>0        
-          
+
+          }//level下标为>0
+
       },
       addLevelArr(ObjArr,ObjItem){//不重复添加对象
           let _this = this;
@@ -167,26 +260,29 @@ export default {
         _this.storageMenulist = getStorage(params);
       },
       getBreadcrumb() {
-        let _this = this;
         //debugger
-        //console.log('_this.lightMenuArr-----:'+JSON.stringify(_this.lightMenuArr));
-        //console.log('this.CmenuName-----:'+JSON.stringify(this.CmenuName));
+        let _this = this;
+
+        //this.browserBackEvent();
+        //debugger;
+        _this.levelList = [];//先清空
+        _this.CmenuName = api.getGlobalVal("CmenuName");
+        _this.lightMenuArr = _this.CmenuName ?  _this.CmenuName.lightMenu.split('-') : [];
+
         _this.curMenulist = _this.storageMenulist ? _this.storageMenulist : [];
         //console.log('getBreadcrumb-----_this.curMenulist:'+JSON.stringify(_this.curMenulist));
         _this.levelFilter(_this.curMenulist,_this.level);
-
         let curLightMenuLen = _this.lightMenuArr.length;
-        
-        //console.log('getBreadcrumb-----_api.getGlobalVal("CmenuName").lightMenu:',api.getGlobalVal("CmenuName").lightMenu);
-        //console.log('getBreadcrumb-----_this.lightMenuArr,_this.lightMenuArr.length:'+JSON.stringify(_this.lightMenuArr),_this.lightMenuArr.length);
         _this.addLevelDetail(curLightMenuLen);
-        
+
+        //console.log('-----------getBreadcrumb-----that.levelList:'+JSON.stringify(_this.levelList));
+
       }
   },
   mounted() {
-    //debugger;
     this.CmenuName = api.getGlobalVal("CmenuName");
     this.getStorageMenulist();
+    this.browserBackEvent();
     this.getBreadcrumb();
 
   }
@@ -195,6 +291,10 @@ export default {
 <style lang="scss" scoped>
 
 .title-main {
+  font-size:.18rem;
+  font-family:'MicrosoftYaHei';
+  font-weight:400;
+  color:#1E2330;
   // background-color: #eff3f6;
   height: .7rem;
   padding-left: 20px;
@@ -206,6 +306,9 @@ export default {
     font-size: .18rem;
     line-height: .39rem;
   }
+}
+/deep/.el-breadcrumb__item {
+    float: none;
 }
 /deep/.el-breadcrumb__item:first-child {
   .maintenance-location {

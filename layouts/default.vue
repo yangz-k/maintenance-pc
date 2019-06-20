@@ -23,7 +23,7 @@
           <el-menu
             ref="elmenu"
             class="el-menu-vertical-demo"
-            :default-active="lightMenu"
+            :default-active="lightMenu.slice(0,3)"
             @open="handleOpen"
             @close="handleClose"
             :default-openeds="[lightMenu.split('-')[0]]"
@@ -167,7 +167,6 @@
           :model="pwd_obj"
           :rules="rules"
           ref="pwd_obj"
-          style="height:2.6rem;"
         >
           <div class="div-flex m_b20rem">
             <div class="form_title fs18px">
@@ -218,7 +217,7 @@
             <el-button
               class="wb-clear"
               style="margin-right: .15rem;"
-              @click="dialogUpdatePwd = false"
+              @click="handleClose_pwd"
               round
               >取 消</el-button
             >
@@ -230,57 +229,67 @@
       </el-dialog>
     </el-container>
     <!-- 弹出切换企业 -->
-    <el-dialog
-      class="switchEnterprise"
-      title="选择企业"
-      :visible.sync="previewVisible"
-      :top="'0'"
-      :close-on-click-modal="false"
-      width="4.5rem"
-    >
-      <div id="loginDiv" class="login-div">
-        <ul>
-          <li
-            :title="joinEnterprise.orgName"
-            v-for="(joinEnterprise, index) in joinEnterpriseData"
-            :key="index"
-          >
-            <!-- <span><input type="radio" name="radio" :value="joinEnterprise.id" :checked="isChecked" /></span>
-              <span>{{joinEnterprise.orgName}}</span> -->
+    <div v-if="previewVisible">
+      <el-dialog
+        class="switchEnterprise"
+        title="选择企业"
+        :visible.sync="previewVisible"
+        :top="'0'"
+        :close-on-click-modal="false"
+        width="4.5rem"
+        @close="closeUnitDialog"
+      >
+        <div id="loginDiv" class="login-div">
+          <ul>
+            <li
+              :title="joinEnterprise.orgName"
+              v-for="(joinEnterprise, index) in joinEnterpriseData"
+              :key="index"
+            >
+              <!-- <span><input type="radio" name="radio" :value="joinEnterprise.id" :checked="isChecked" /></span>
+                <span>{{joinEnterprise.orgName}}</span> -->
 
-            <a
-              v-if="joinEnterprise.isChecked"
-              href="javascript:;"
-              class="unchecked checked"
-              :value="joinEnterprise.id"
-              @click="enterprise($event)"
-            >
-              {{ joinEnterprise.orgName }}
-              <b id="logo" class="el-icon-check"></b>
-            </a>
-            <a
-              v-else
-              href="javascript:;"
-              class="unchecked"
-              :value="joinEnterprise.id"
-              @click="enterprise($event)"
-              >{{ joinEnterprise.orgName }}</a
-            >
-          </li>
-        </ul>
-      </div>
-      <div class="div-flex all_center">
-        <el-button
-          id="joinEnterprise"
-          class="login-btn-dialog fs18px button-radius"
-          type="warning"
-          @click="joinEnterprise(joinEnterpriseData)"
-          >进入企业</el-button
-        >
-      </div>
-    </el-dialog>
+              <a
+                v-if="joinEnterprise.isChecked"
+                href="javascript:;"
+                class="unchecked checked"
+                :value="joinEnterprise.id"
+                @click="enterprise($event)"
+              >
+                {{ joinEnterprise.orgName }}
+                <b id="logo" class="el-icon-check"></b>
+              </a>
+              <a
+                v-else
+                href="javascript:;"
+                class="unchecked"
+                :value="joinEnterprise.id"
+                @click="enterprise($event)"
+                >{{ joinEnterprise.orgName }}</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="div-flex all_center">
+          <el-button
+            id="joinEnterprise"
+            class="login-btn-dialog fs18px button-radius"
+            type="warning"
+            @click="joinEnterprise(joinEnterpriseData)"
+            >进入企业</el-button
+          >
+        </div>
+      </el-dialog>
+    </div>
     <FireAlarmBox></FireAlarmBox>
-    <HelpCenter ref="HelpCenter"></HelpCenter>
+    <!--<HelpCenter ref="HelpCenter"></HelpCenter>-->
+    <div class="new-reminder div-flex all_center" v-if="isShowNewReminder">
+    	<div class="reminderCon">
+    		<img :src="newReminderImg" />
+      	<span @click="closeNewReminder()"></span>
+    	</div>
+
+    </div>
   </div>
 </template>
 	<script>
@@ -295,13 +304,18 @@ import { Message, MessageBox } from "element-ui";
 import { mapState, mapMutations } from "vuex";
 import MessageReminder from "~/components/MessageReminder";
 import FireAlarmBox from "~/components/FireAlarmBox";
-import HelpCenter from "~/components/HelpCenter";
+//import HelpCenter from "~/components/HelpCenter";
 export default {
   middleware: "authenticated",
   components: {
     MessageReminder,
     FireAlarmBox,
-    HelpCenter
+//  HelpCenter
+  },
+  provide(){
+   return {
+       reload: this.reload
+   }
   },
   data() {
     var validatePass = (rule, value, callback) => {
@@ -385,8 +399,10 @@ export default {
       previewVisible: false,
       joinEnterpriseData: [], //组织机构数据
       selectedEnterprises: "", // 选中企业
-      userInfo: [] //用户信息
+      userInfo: [], //用户信息
       // 选择企业结束
+      isShowNewReminder:false,//是否展示新版本提醒
+      newReminderImg: require("../assets/img/Overalllayout/newReminderImg.png"),
     };
   },
   mounted() {
@@ -403,9 +419,19 @@ export default {
     this.isload();
     //定时统计web用户在线时长
     this.statisticalDuration();
+    //弹出改版提醒
+    this.alertNewReminder();
     // });
   },
   methods: {
+    //2.0版本提示新版本
+    alertNewReminder(){
+      this.isShowNewReminder = true;
+    },
+    //关闭新版本提示
+    closeNewReminder(){
+      this.isShowNewReminder = false;
+    },
     statisticalDuration() {
       //定时统计web用户在线时长
       setInterval(function() {
@@ -416,7 +442,7 @@ export default {
             api.getGlobalVal("maintenance_userObj").loginName,
           onlineTime_var: 1
         };
-        // gio("track", "webUserOnlineStatistics", eventLevelVariables);
+        gio("track", "webUserOnlineStatistics", eventLevelVariables);
       }, 60000);
     },
     // 提交修改密码
@@ -473,6 +499,10 @@ export default {
       api.setGlobalVal("CmenuName", "0");
       this.lightMenu = "0";
       this.$router.push({ name: "main-main" });
+      //连接websocet
+      setTimeout(function(){
+        webSocketConnect();
+      },500)
     },
     reload() {
       //当前页刷新
@@ -488,7 +518,7 @@ export default {
       this.$store.commit("updateUserObj", this.userObj);
       this.orgName = this.userObj.orgName;
     },
-    browserEvent() {
+    /*  browserEvent() {
       //浏览器的回退事件，联动导航菜单和面包屑；
       let _key,
         _index,
@@ -523,6 +553,69 @@ export default {
                 });
               }
             });
+            console.log(api.getGlobalVal("CmenuName"))
+          }
+          setTimeout(function() {
+            $(".is-opened .el-submenu__title").css("background", "#313a50");
+          }, 300);
+        });
+      }
+    },*/
+    browserEvent() {
+      //浏览器回退
+      let _key,
+        _index,
+        listAll,
+        that = this;
+      if (window.history) {
+        $(".el-submenu .el-submenu__title").css("background", "transparent");
+        window.addEventListener("popstate", function() {
+          let pathname = window.location.pathname,pathnameArr,pathNamePre,host=window.location.host,pageParams={};
+          if(pathname.indexOf("maintenance-")>0){
+          	 pathnameArr = pathname.split("/").slice(2);
+          	 pathNamePre = pathname.split("/").slice(0,2).join("/");
+          }else{
+          	 pathnameArr = pathname.split("/").slice(1);
+          	 pathNamePre = "/";
+          }
+          let _pathname = pathnameArr[0] + "-" + pathnameArr[1]; //.replace("/","-")
+          listAll = that.list;
+          if (_pathname === "main-main") {
+            api.setGlobalVal("CmenuName", "0");
+            that.lightMenu = "0";
+          } else {
+          	if(pathname.indexOf("Tabe")>0){
+          		 api.setGlobalVal(
+			          "CmenuName",
+			          JSON.stringify({
+			            name: "维保单位信息",
+			            parName: "维保人员信息",
+			            lightMenu: "1-1"
+			          })
+			        );
+			        that.lightMenu = "1-1";
+			        pageParams.tabName = 'third';
+          	}else{
+          		listAll.forEach(function(item, index) {
+	              if (item.children.length > 0) {
+	                item.children.forEach(function(ele, key) {
+	                	let resAlias = ele.resAlias.split("-")[0]
+	                  if (ele.resAlias === _pathname) {
+	                    api.setGlobalVal(
+	                      "CmenuName",
+	                      JSON.stringify({
+	                        name: ele.resName,
+	                        parName: item.resName,
+	                        lightMenu: index + "-" + key
+	                      })
+	                    );
+	                    that.lightMenu = index + "-" + key;
+	                  }
+	                  return false;
+	                });
+	              }
+	            });
+	          }
           }
           setTimeout(function() {
             $(".is-opened .el-submenu__title").css("background", "#313a50");
@@ -829,7 +922,6 @@ export default {
             sysCode_web: "sys_maintenance_web"
           };
           api.setGlobalVal("maintenance_userObj", JSON.stringify(data));
-          api.setGlobalVal("userToken", data.userToken);
           api.setGlobalVal(
             "CmenuName",
             JSON.stringify({
@@ -868,6 +960,9 @@ export default {
           that.$message.error("获取授权id失败！");
         }
       });
+    },
+    closeUnitDialog(){
+      this.previewVisible = false;
     },
     enterprise(dom) {
       $(".unchecked").removeClass("checked");
@@ -982,6 +1077,34 @@ export default {
 }
 .contentAll {
   position: relative;
+  .new-reminder{
+    height: 100%;
+    width: 100%;
+    z-index: 2000;
+    background-color: rgba(0, 0, 0, 0.4);
+    position: absolute;
+    top:0;
+    text-align: center;
+    .reminderCon{
+    	width:8.3rem;
+    	height:7.2rem;
+    	position:relative;
+    	img{
+	      width:97%;
+	    }
+	    span{
+	      background-color: transparent;
+	      position: absolute;
+	      bottom: 0;
+	      height: .5rem;
+	      width: .6rem;
+	      left: 50%;
+	      transform: translateX(-50%);
+	      cursor: pointer;
+	    }
+    }
+
+  }
 }
 /* 全局弹框动画效果 */
 .form_input_div {
@@ -1029,7 +1152,7 @@ export default {
 }
 
 .top-r {
-  cursor: pointer;
+  // cursor: pointer;
   display: flex;
   justify-items: center;
   align-items: center;
@@ -1054,6 +1177,7 @@ export default {
     right: 0.5rem;
   }
   .el-dropdown span {
+    cursor: pointer;
     display: flex;
     color: #727989;
     justify-items: center;

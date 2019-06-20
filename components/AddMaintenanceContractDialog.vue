@@ -108,8 +108,8 @@
         </el-col>
         <el-col class="system-col div-flex"
           ><span></span><span>服务合同：</span>
-          <el-button type="primary" @click="uploadFile()" v-if="!isSee"
-            >上传<i class="el-icon-upload el-icon--right"></i
+          <el-button class="AddAttachments" type="" @click="uploadFile()" v-if="!isSee"
+            >添加附件<i class="el-icon-upload el-icon--right"></i
           ></el-button>
           <input
             id="fileInput"
@@ -118,7 +118,7 @@
             style="display:none;"
             v-if="!isSee"
           />
-          <em v-if="!isSee">*支持word/pdf/jpg/png/bmp/jpeg/gif格式</em>
+          <em class="warnMessage" v-if="!isSee">*支持word/pdf/jpg/png/bmp/jpeg/gif格式</em>
           <em v-if="isSee">共有{{ fileList.length }}个合同附件</em>
         </el-col>
         <el-col>
@@ -167,6 +167,7 @@
 <script>
 import api from "~/config/http";
 import { Message, MessageBox } from "element-ui";
+import download from 'ly-downloader'
 export default {
   data() {
     return {
@@ -416,28 +417,7 @@ export default {
     },
     //下载附件
     downloadFile(fileObj) {
-      var $a = document.createElement("a");
-      $a.setAttribute("href", api.forent_url.image_url + fileObj.attachPath);
-      $a.download = fileObj.name;
-      var evObj = document.createEvent("MouseEvents");
-      evObj.initMouseEvent(
-        "click",
-        true,
-        true,
-        window,
-        0,
-        0,
-        0,
-        0,
-        0,
-        false,
-        false,
-        true,
-        false,
-        0,
-        null
-      );
-      $a.dispatchEvent(evObj);
+      download(1, api.forent_url.image_url + fileObj.attachPath,fileObj.name);
     },
     //保存合同信息
     saveContract() {
@@ -592,6 +572,7 @@ export default {
       .system-equipment > div {
         /*float: left;*/
         width: 50%;
+         min-width: 3.3rem;
         /*margin-top: 3px;*/
         /*line-height: 13px;*/
         height: 30px;
@@ -626,6 +607,46 @@ export default {
           margin-left: 0.1rem;
         }
       }
+    }
+    .AddAttachments{ //添加附件按钮
+      width:1.16rem;
+      background:#FF6822;
+      border-radius:18px;
+      height:.36rem;
+      line-height: .36rem;
+      text-align: center;
+      font-size:.16rem;
+      font-family:'HiraginoSansGB-W3';
+      font-weight:normal;
+      color:#FFFFFF;
+      border-color:#FF6822;
+    }
+    .warnMessage{
+      margin-left: .09rem;
+      height:.18rem;
+      font-size:.16rem;
+      font-family:'HiraginoSansGB-W3';
+      font-weight:bold;
+      color:#B5B5B5;
+      line-height:.4rem;
+      font-style:normal;
+    }
+    .wb-clear,.wb-sure{
+      width:.88rem;
+      height:.36rem;
+      background:rgba(95,104,127,0);
+      border-radius:18px;
+      font-size:.16rem;
+      font-family:'HiraginoSansGB-W3';
+      font-weight:normal;
+    }
+    .wb-clear{
+      border:1px solid #5F687F;
+      color:#5F687F;
+    }
+    .wb-sure{
+      border:1px solid #FF6822;
+      color:#FF6822;
     }
   }
 /deep/.el-dialog__body {

@@ -134,7 +134,7 @@
     }
 
     .avatar-uploader .el-upload:hover {
-        border-color: #409EFF;
+        border-color: #FF6822;
     }
 
     .avatar-uploader-icon {

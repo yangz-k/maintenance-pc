@@ -11,9 +11,9 @@
 			</el-col>
 		</el-row>
 		<!-- 搜索栏 -->
-		<el-row class="contract-operation-head" type="flex" justify="space-around" align="middle">
+		<el-row class="contract-operation-head" type="flex" align="middle">
 			<el-col :span="4">
-				<div class="div-flex">
+				<div class="div-flex ml-20">
 					<span class="fs18px colorLabel">维保人员：</span>
 					<el-select v-model="userIds" @change="searchFilter()" :disabled="disableds" clearable placeholder="请选择" class="flex1 search_sec">
 						<el-option v-for="(item, index) in userIdsOptions" :key="index" :label="item.label" :value="item.value">
@@ -22,34 +22,34 @@
 				</div>
 			</el-col>
 			<el-col :span="4">
-				<div class="div-flex">
+				<div class="div-flex ml-30">
 					<span class="fs18px colorLabel">计划类型：</span>
 					<el-select v-model.trim="planType" @change="searchFilter()" clearable placeholder="请选择" class="flex1">
-						<el-option v-for="item in planTypeOptions" :key="item.value" :label="item.label" :value="item.value">
+						<el-option v-for="(item, index) in planTypeOptions" :key="index" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
 				</div>
 			</el-col>
 			<el-col :span="4">
-				<div class="div-flex">
+				<div class="div-flex ml-30">
 					<span class="fs18px colorLabel">服务及时性：</span>
 					<el-select v-model.trim="isOverdue" @change="searchFilter()" clearable placeholder="请选择" class="flex1">
-						<el-option v-for="item in isOverdueOptions" :key="item.value" :label="item.label" :value="item.value">
+						<el-option v-for="(item, index) in isOverdueOptions" :key="index" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
 				</div>
 			</el-col>
 			<el-col :span="4">
-				<div class="div-flex">
+				<div class="div-flex ml-30">
 					<span class="fs18px colorLabel">服务状态：</span>
 					<el-select v-model.trim="state" @change="searchFilter()" clearable placeholder="请选择" class="flex1 search_sec1" :disabled="canSelectState">
-						<el-option v-for="item in stateOptions" :key="item.value" :label="item.label" :value="item.value">
+						<el-option v-for="(item, index) in stateOptions" :key="index" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
 				</div>
 			</el-col>
-			<el-col :span="4">
-				<div class="div-flex">
+			<el-col :span="5">
+				<div class="div-flex ml-30">
 					<el-input class="flex1 search_bbt" v-model="proprietorName" suffix-icon="el-icon-search" @clear="searchFilter()" @change="searchFilter()" placeholder="请输入企业名称" clearable="clearable">
 					</el-input>
 				</div>
@@ -71,7 +71,8 @@
 	import api from "~/config/http";
 	import Table from "~/components/Table";
 	import Title from "~/components/Title";
-	import mixin from "~/mixin/mixin.js";
+  import mixin from "~/mixin/mixin.js";
+  import download from 'ly-downloader';
 	export default {
 		mixins: [mixin],
 		components: {
@@ -91,7 +92,7 @@
 					loading: true, // 是否添加表格loading加载动画
 					highlightCurrentRow: true, // 是否支持当前行高亮显示
 					mutiSelect: false, // 是否支持列表项选中功能
-					isShowSerialNumber: true // 是否展示序号
+					isShowSerialNumber: true, // 是否展示序号
 				}, // table 的参数
 				columns: [{
 						prop: "proprietorName",
@@ -132,6 +133,7 @@
 					{
 						prop: "norm",
 						label: "是否规范",
+						isShowTipicon: true,
 						align: "center",
 						minWidth: "15%"
 					}
@@ -156,7 +158,7 @@
 						{
 							title: "预览",
 							type: "text",
-							icon: "maintenance-icon_yan",
+							icon: "el-icon-view",
 							show: (index, row) => {
 								return row.stateName == "已完成";
 							},
@@ -276,7 +278,7 @@
 				this.$router.push({
 			        name: name,
 			        params: {
-			         
+
 			        }
 		        });
 			},
@@ -346,45 +348,24 @@
 		        params.proprietorName = this.proprietorName;
 		        const _this = this;
 		        this.$nextTick(function(){
+		        			if(!_this.$refs.table)return;
 							try {
 								_this.$refs.table.queryTableListByParams(params);
 							} catch (error) {
 								setTimeout(function(){
 									_this.$refs.table.queryTableListByParams(params);
-								})
+								},0)
 							}
-		          
+
 		        })
 			},
 			// 下载附件
 			handleDownload(index, row) {
-				let $a = document.createElement("a");
-				$a.setAttribute(
-					"href",
-					api.forent_url.maintenance_service_url +
-					"/plan/exportRoutineWord?type=1&id=" +
-					row.id
-				);
-				$a.download = row.attachName;
-				let evObj = document.createEvent("MouseEvents");
-				evObj.initMouseEvent(
-					"click",
-					true,
-					true,
-					window,
-					0,
-					0,
-					0,
-					0,
-					0,
-					false,
-					false,
-					true,
-					false,
-					0,
-					null
-				);
-				$a.dispatchEvent(evObj);
+        if(myBrowser() == 'FF'){
+          download(1, api.forent_url.maintenance_service_url + "/plan/exportRoutineWord?type=1&fireFox=1&id=" + row.id);
+        }else{
+          download(1, api.forent_url.maintenance_service_url + "/plan/exportRoutineWord?type=1&id=" + row.id);
+        }
 			},
 			// 预览
 			handlePreview(index, row) {
@@ -400,10 +381,16 @@
 						console.log("res========", res);
 						if(res && res.code === "success") {
 							if(res.data) {
-								this.previewVisible = true;
-								setTimeout(function() {
-									_this.previewSrc = api.forent_url.image_url + res.data;
-								});
+                this.previewVisible = true;
+                if(myBrowser() === "IE"){
+                  setTimeout(function() {
+                    _this.previewSrc = api.forent_url.localHostName+"/pdfjs/web/viewer.html?file="+api.forent_url.image_url + res.data;
+                  });
+                }else{
+                  setTimeout(function() {
+                    _this.previewSrc = api.forent_url.image_url + res.data;
+                  });
+                }
 							} else {
 								this.$message.error("pdf生成失败！");
 							}
@@ -420,15 +407,15 @@
 					name: "例行维保跟踪详情",//title name
 			        parName: "例行维保跟踪",//父级title name
 			        lightMenu: api.getGlobalVal("CmenuName").lightMenu + "-0",
-			        linkname: "MaintenanceManagement-RoutineMaintenanceTracking-RoutineDetails",
-			        path: "MaintenanceManagement-RoutineMaintenanceTracking-RoutineDetails"
+			        linkname: "MaintenanceManagement-RoutineMaintenanceTrackingControl-RoutineDetails",
+			        path: "MaintenanceManagement-RoutineMaintenanceTrackingControl-RoutineDetails"
 				};
 				_this.setDetailBreadcrumb(paramCrumb,_this.isLevelDetail);
 				//详情页面包屑 end
-				
+
 				if(obj.column.label != "报告") {
 					_this.$router.push({
-						name: "MaintenanceManagement-RoutineMaintenanceTracking-RoutineDetails",
+						name: "MaintenanceManagement-RoutineMaintenanceTrackingControl-RoutineDetails",
 						params: {
 							id: obj.row.id,
 							userIds: _this.pageParams.userIds,
@@ -531,7 +518,13 @@
 		}
 		/deep/.el-dialog__body {
 			height: 94%;
-		}
+    }
+    .colorLabel{
+      font-size:.18rem;
+      font-family:'HiraginoSansGB-W3';
+      font-weight:normal;
+      color:#43495A;
+    }
 	}
 	/deep/.operate-group .item .el-button{
 		width:32px;

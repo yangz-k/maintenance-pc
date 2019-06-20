@@ -84,7 +84,7 @@ export default {
   methods: {
     messageMonitoring() {
       let _this = this;
-      if (this.stompClient.connected) {
+      if (this.stompClient && this.stompClient.connected && _this.orgCode) {
         this.stompClient.subscribe(
           "/topic/" + _this.orgCode + "/system_notice",
           function(greeting) {
@@ -256,6 +256,9 @@ export default {
   min-height: 5.7rem;
   border-radius: 14px;
   background: -webkit-linear-gradient(#f55c5d, #ee3232, #b92423);
+  background: -o-linear-gradient(#f55c5d, #ee3232, #b92423); /* Opera 11.1-12.0 */
+  background: -moz-linear-gradient(#f55c5d, #ee3232, #b92423); /* Firefox 3.6-15 */
+  background: linear-gradient(#f55c5d, #ee3232, #b92423); /* 标准语法 */
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;

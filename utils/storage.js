@@ -80,7 +80,7 @@ export const getStorage = (params) => {
   } else if (obj.dataType == 'object') {
     content = obj.content
   }
-  console.log("---------,------------getStorage---content-",content);
+  //console.log("---------,------------getStorage---content-",content);
   return content
 }
 /**

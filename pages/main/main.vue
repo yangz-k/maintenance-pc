@@ -11,8 +11,8 @@
 
 				<div class="m-l10 div-flex align_center height_100 flex1">
 					<div class="flex1 mt-5 height_100 div-flexColumn">
-						<span class="fs26px">维修任务待下发</span>
-						<p class="fs46px" v-text="uncompletedFault">
+						<span class="fs26px font_w6">维修任务待下发</span>
+						<p class="fs46px font_yahei" v-text="uncompletedFault">
 							<!--{{uncompletedFault}}-->
 						</p>
 					</div>
@@ -24,8 +24,8 @@
 				</div>
 				<div class="m-l10 div-flex height_100 flex1 align_center">
 					<div class="flex1 mt-5 height_100 div-flexColumn">
-						<span class="fs26px">应急维保逾期未完成</span>
-						<p class="fs46px" v-text="overdueUncompleted">
+						<span class="fs26px font_w6">应急维保逾期未完成</span>
+						<p class="fs46px font_yahei" v-text="overdueUncompleted">
 							<!--{{overdueUncompleted}}-->
 						</p>
 					</div>
@@ -37,8 +37,8 @@
 				</div>
 				<div class="m-l10 div-flex  align_center height_100 flex1">
 					<div class="flex1 mt-5 height_100 div-flexColumn">
-						<span class="fs26px">应急维保今日待完成</span>
-						<p class="fs46px" v-text="uncompletedToday">
+						<span class="fs26px font_w6">应急维保今日待完成</span>
+						<p class="fs46px font_yahei" v-text="uncompletedToday">
 							<!--{{uncompletedToday}}-->
 						</p>
 					</div>
@@ -50,8 +50,8 @@
 				</div>
 				<div class="m-l10 div-flex  align_center flex1 height_100">
 					<div class="flex1 mt-5 height_100 div-flexColumn">
-						<span class="fs26px">例行维保本月待完成</span>
-						<p class="fs46px" v-text="uncompletedMonth">
+						<span class="fs26px font_w6">例行维保本月待完成</span>
+						<p class="fs46px font_yahei" v-text="uncompletedMonth">
 							<!--{{uncompletedMonth}}-->
 						</p>
 					</div>
@@ -66,7 +66,7 @@
 							<img class="widthImg_auto" src="../../assets/img/main/rili_yingji.png">
 							<span class="ml-8 fs24px">应急维保</span>
 						</div>
-						<div class="div-flex align_center fs16px fw600">
+						<div class="div-flex align_center fs16px fw600 font_yahei_bold">
 							今日需处理应急维保
 							<span class="fw600 totle_num" id="totle_num">{{maintenanceOrderAllCount}}</span>单，已完成
 							<span class="fw600 cur_color_yingji completed_num" id="completed_num">{{maintenanceOrderOverCount}}</span>单
@@ -104,7 +104,7 @@
 						<div id="echarts-div" class="echarts-div div-flex align_center flex1">
 							<canvas id="Mymaintenance" width="250" height="250"></canvas>
 						</div>
-						<div class="month-count" id="month-count">
+						<div class="month-count font_yahei" id="month-count">
 							<article class="month-center div-flex align_center flex1">
 								<p id="totality" class="fs36px">0</p>
 								<p class="now-result fs18px fw600">本月总数</p>
@@ -541,7 +541,7 @@
 											<img class="left_sa" src="` + _this.imgUrlObj.icon5 + `" />
 											<div style="max-width:400px">
 												<div class="pd15px_20px div-flex align_center color_yingji yy-border-bottom">
-													<p class="p_splice">维保单号：<span class="fw600" title="` +
+													<p class="p_splice font_yahei">维保单号：<span class="fw400" title="` +
 									data[i].maintenanceId +
 									`">` +
 									data[i].maintenanceId +
@@ -551,7 +551,7 @@
 									`
 												</div>
 												<div class="pd15px_20px">
-													<div class="div-flex align_center mb-10px">
+													<div class="div-flex align_center mb-10px fs18px">
 														<div><img class="emergency_icon" src="` + _this.imgUrlObj.icon_build + `" /></div>
 														<p class=" div-flex align_center m-l5px flex1">
 															<span class="color_left">维保单位：</span>
@@ -878,7 +878,7 @@
 						padding: [5, 15, 5, 5],
 						data: ['完成应急维保数量', '完成例行维保数量'],
 						textStyle: {
-							color: "#666666",
+							color: "##676767",
 							fontSize: chartFontSize,
 							fontWeight: 'bold',
 						}
@@ -887,8 +887,8 @@
 						trigger: 'axis',
 						backgroundColor: "#fff",
 						textStyle: {
-							color: "#a7abb8",
-							fontSize: 18
+							color: "#7F8699",
+							fontSize: 16
 						},
 						borderColor: "#ccc",
 						borderWidth: 1,
@@ -1023,6 +1023,26 @@
 		justify-content: flex-start;
 		line-height: 1;
 		padding-top: 15px;
+		@media screen and (max-width: 1920px) {
+		  &{
+		  	min-height: 796px;
+		  }
+		}
+		@media screen and (max-width: 1680px) {
+		  &{
+		  	min-height: 745px;
+		  }
+		}
+		@media screen and (max-width: 1440px) {
+		  &{
+		  	min-height: 640px;
+		  }
+		}
+		@media screen and (max-width: 1366px) {
+		  &{
+		  	min-height: 520px;
+		  }
+		}
 		.homePageTitle {
 			height: 0.52rem;
 			color: #5f687f;
@@ -1038,6 +1058,12 @@
 		/*-日历样式 start-*/
 		.ju_center_start {
 			align-items: center;
+		}
+		.color_left{
+			color:#767676;
+		}
+		.color_right{
+			color:#3B4358;
 		}
 		.flex_i {
 			display: -webkit-box;
@@ -1245,7 +1271,11 @@
 			width: 60%;
 			overflow: hidden;
 			white-space: nowrap;
+			color:#848CA3;
 			/* text-overflow: ellipsis; */
+			span{
+				color:#5F687F;
+			}
 		}
 		.ellipsis {
 			display: inline-block;

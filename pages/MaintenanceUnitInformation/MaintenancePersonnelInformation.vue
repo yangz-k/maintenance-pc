@@ -7,7 +7,7 @@
       <!--搜索框-->
       <div class="search_div">
         <div class="div-flex align_center border_bottom bg-white" ref="search">
-            <label class="color_mo fs18px">职位：</label>
+            <label class="color_mo fs18px font_yahei">职位：</label>
             <el-select class="m_r15rem" v-model="position" clearable placeholder="请选择" @change="searchFrom()">
               <el-option
                 clearable
@@ -37,6 +37,7 @@
           :options="options"
           :columns="columns"
           :operates="operates"
+          :showHeader="false"
           :url="requestUrl"
           @rowClick="rowClick"
         ></Table>
@@ -103,7 +104,7 @@ export default {
             let userImg = row.headPortrait? api.forent_url.image_url + row.headPortrait : this.img_obj.weibao
            return `
                   <div class="div-flex align_center">
-                    <div class="m_r15rem div-flex align_center">
+                    <div class="m_r22rem div-flex align_center">
                        <img class="userImg" src="${userImg}" alt="">
                     </div>
                     <div class="flex1 text_left">
@@ -156,7 +157,7 @@ export default {
             disabled: false,
             method: (index, row) => {
               this.$router.push({
-                name:'MaintenanceUnitInformation-MaintenancePersonnelInformation-Tabe',
+                name:'MaintenanceUnitInformation-MaintenancePersonnelInformationControl-Tabe',
                 params:{
                   orgId:row.orgId,
                   userId:row.userId,
@@ -240,14 +241,19 @@ export default {
           name: "维保信息人员详情",//title name
               parName: "维保信息人员",//父级title name
               lightMenu: api.getGlobalVal("CmenuName").lightMenu + "-0",
-              linkname: "MaintenanceUnitInformation-MaintenancePersonnelInformation-Tabe",
-              path: "MaintenanceUnitInformation-MaintenancePersonnelInformation-Tabe"
+              linkname: "MaintenanceUnitInformation-MaintenancePersonnelInformationControl-Tabe",
+              path: "MaintenanceUnitInformation-MaintenancePersonnelInformationControl-Tabe"
         };
-        _this.setDetailBreadcrumb(paramCrumb,_this.isLevelDetail);
+        //debugger;
+        _this.setDetailBreadcrumb(paramCrumb,true);
         //详情页面包屑 end
         if (obj.column.label != "操作") {
+        	sessionStorage.setItem("params",JSON.stringify({
+              orgId:obj.row.orgId,
+              userId:obj.row.userId
+            }))
           this.$router.push({
-            name:'MaintenanceUnitInformation-MaintenancePersonnelInformation-Tabe',
+            name:'MaintenanceUnitInformation-MaintenancePersonnelInformationControl-Tabe',
             params:{
               orgId:obj.row.orgId,
               userId:obj.row.userId
@@ -293,12 +299,31 @@ export default {
   height: 100%;
   width: 100%;
 }
+/*@media screen and (min--moz-device-pixel-ratio:0) {
+     /deep/ .el-table__header{
+	      display: none;
+	    }
+	    /deep/.el-table__header-wrapper{
+	      display: none;
+	    }
+}
+@media all and (-ms-high-contrast: none),
+(-ms-high-contrast: active) {
+    /deep/.el-table__header{
+      display: none;
+    }
+    /deep/.el-table__header-wrapper{
+      display: none;
+    }
+}*/
+
 #MaintenancePersonnelInformation{
 	/deep/.el-table thead{
-		display: none;
+		/*display: none;*/
 	}
   .userImg{
     width: .61rem;
+    height:.61rem;
     border-radius: 50%;
   }
   .border_bottom{
@@ -308,7 +333,9 @@ export default {
       // width: auto;
     }
   }
-
+	.el-table__row{
+		cursor: pointer;
+	}
   .services button{
     background:transparent;
     width: auto!important;
@@ -332,20 +359,23 @@ export default {
     background:transparent;
     color: #ff6000;
   }
-  .noheader {
+  /*.noheader {
     /deep/ .el-table__header{
       display: none;
     }
     .el-table__header-wrapper{
       display: none;
     }
-  }
+  }*/
 
   .headP{
     width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-family:HiraginoSansGB-W6;
+    font-weight:bold;
+    font-size:.20rem;
   }
   .huoyue{
     border-radius:3px;
@@ -364,6 +394,8 @@ export default {
   }
   .noheader /deep/.el-table__row {
     cursor: pointer;
+    font-family:"MicrosoftYaHei";
+    font-size: 0.18rem;
   }
 }
 </style>

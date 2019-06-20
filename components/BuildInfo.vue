@@ -1,5 +1,5 @@
 <template>
-    <el-dialog  title="提示" :visible.sync="dialog_build" width="40%" :before-close="resetForm">
+    <el-dialog  title="提示" :visible.sync="dialog_build" width="40%" :before-close="resetForm" v-dialogDrag :close-on-click-modal="false">
   <div class="form_table pd20rem fs18px overflow_auto" v-loading="loading2" style="height:5rem;">
     <el-form :model="build_obj" :rules="rules" ref="build_obj" label-width="130px" class="demo-dynamic">
       <el-form-item prop="buildName" class="form_input_div_host fs18px m_b15rem" label="建筑名称：">
@@ -175,16 +175,17 @@ export default {
   width:100%;
 }
 .right_span {
-  height: 30px;
-  width: 50px;
+  height: .3rem;
+  width:.5rem;
   text-align: center;
-  line-height: 30px;
+  line-height: .3rem;
   position: absolute;
   right: 5px;
   top: 50%;
   transform: translate(0%, -50%);
   background-color: #fff;
   color: #999;
+  font-size: .14rem;
 }
 .caozuo {
   display: inline-block;

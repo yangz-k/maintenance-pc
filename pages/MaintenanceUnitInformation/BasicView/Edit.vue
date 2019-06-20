@@ -1,5 +1,5 @@
 <template>
-  <div class="mainCon" v-loading='loading'>
+  <div class="mainCon font_yahei" v-loading='loading'>
      <!-- 面包屑 -->
     <el-row class="l-head" style="background-color:#edf0f7" type="flex" justify="space-between" align="middle">
         <!-- 面包屑 -->
@@ -43,9 +43,9 @@
             <table class="gg-table gg-tableFix" cellspacing="0" cellpadding="0">
               <colgroup>
                 <col width="5.5%">
-                <col width="40.5%">
+                <col width="30.5%">
                 <col width="5.5%">
-                <col width="40.5%">
+                <col width="50.5%">
               </colgroup>
               <tbody>
                 <tr class="con">
@@ -73,7 +73,6 @@
                   <td>
           			  <!--<el-form-item prop="checkPhone">-->
                     <el-input
-                      clearable
                       id="phone"
                       class="noResize serviceTel"
                       placeholder="请输入服务电话"
@@ -95,7 +94,6 @@
                   <th>法人姓名：</th>
                   <td>
                     <el-input
-                      clearable
                       class="noResize"
                       placeholder="请输入法人姓名"
                       maxlength="15"
@@ -108,7 +106,6 @@
                   <th>法人电话：</th>
                   <td>
                     <el-input
-                      clearable
                       class="noResize legalpersonTel"
                       placeholder="请输入法人电话"
                       style="width:60%;float:left"
@@ -125,12 +122,10 @@
                   <td >
                   	<!--<el-form-item prop="roundNumber">-->
                     <el-input
-                      clearable
                       class="noResize activeEmployees"
                       placeholder="请输入大于0的数字"
                       type="number"
                       min="0"
-                      maxlength="6"
                       style="width:60%;float:left;height:98%;"
                       v-model.trim="tableDate.activeEmployees"
                       @change="validate('1',tableDate.activeEmployees)"
@@ -183,7 +178,7 @@
               <el-input type="text" readonly  class="m_r15rem"></el-input>
               <div class="position_r">
                 <input type="file" id="changeFile" @change="changeFile($event)" class="btn_file">
-                <el-button size="small" @click="to_load()" type="info">点击上传</el-button>
+                <el-button size="small" @click="to_load()" type="info">本地上传</el-button>
               </div>
             </div>
           </div>
@@ -208,6 +203,7 @@ export default {
   props: {
     showMain: false
   },
+  inject: ['reload'],
   data() {
   	//验证手机号
 				let checkMobilePhone = (rule, value, callback) =>{
@@ -306,10 +302,10 @@ export default {
   		that.canSave = true;
   		switch(type){
   			case "1" :
-  				$(".activeEmployees").removeClass("errorMessage")	
+  				$(".activeEmployees").removeClass("errorMessage")
   				if(value){
-  					if(!/^[1-9]\d*$/.test(value)){
-  						$(".activeEmployees").attr("data-message","请输入正整数").addClass("errorMessage")
+  					if(!/^\d{0,7}$/.test(value)){
+  						$(".activeEmployees").attr("data-message","请输入0到7位的正整数").addClass("errorMessage")
   						that.canSave = false;
   					}
   				};
@@ -318,23 +314,23 @@ export default {
   				$(".serviceTel").removeClass("errorMessage");
   				if(value){
   					if(!/^0\d{2,3}-?\d{7,8}$/.test(value)){
-  						$(".serviceTel").attr("data-message","服务电话输入有误").addClass("errorMessage")
-  						that.canSave = false;
+              if (!/^[1][3,4,5,6,7,8,9][0-9]{9}$/.test(value)) {
+                $(".serviceTel").attr("data-message","服务电话输入有误").addClass("errorMessage")
+                that.canSave = false;
+              }
   					}
   				}
   				break;
   			case "3" :
-  				$(".serviceTel").removeClass("legalpersonTel");
+  				$(".legalpersonTel").removeClass("errorMessage");
   				if(value){
   					let isPhone = /^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\d{8}$/;//手机号码
     				let isMob= /^(0[0-9]{2,3}\-)([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/;// 座机格式
-						if(isMob.test(value) || isPhone.test(value)) {
-  						
-  					}else{
+						if(!isMob.test(value) && !isPhone.test(value)) {
   						$(".legalpersonTel").attr("data-message","输入的电话号码或手机号有误").addClass("errorMessage")
   						that.canSave = false;
   					}
-  				}	
+  				}
   				break;
   		}
   	},
@@ -484,6 +480,7 @@ export default {
     },
     returnMain() {
       this.offShowMain = true;
+      this.reload();
     },
     //获取企业信息
     getEnterpriseInformation(data) {
@@ -532,16 +529,17 @@ export default {
           self.tableDate
         )
         .then(res => {
-      self.loading=false;
+          self.loading=false;
           if (res.code == "success") {
             this.offShowMain = true;
             Message.success("保存成功!");
+            self.reload();
           } else {
             Message.error("保存失败!");
           }
         });
 			}
-      
+
     },
     changeBtn() {
       let kk = document.getElementById("kk");
@@ -601,7 +599,7 @@ export default {
   padding: 2px 15px;
   height: 0.45rem;
   overflow:hidden;
-  text-overflow:ellipsis; 
+  text-overflow:ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -612,8 +610,8 @@ export default {
   padding: 0.1rem;
   margin-bottom: 0.1rem;
   width: 2.24rem;
-  background-color: #fff;
-  border: 1px solid #c0ccda;
+  border: 1px solid #EFEFEF;
+  background-color: #F8F8F8;
   border-radius: 6px;
   margin-right: 0.15rem;
 }
@@ -688,6 +686,7 @@ export default {
   font-size: 0.16rem;
 }
 .gg-table .con th {
+  // color: #999999;
   color: #999999;
 }
 .gg-table /deep/ .title {
@@ -695,7 +694,7 @@ export default {
 }
 .gg-table tr {
   color: #454545;
-  height: 0.6rem;
+  height: 0.4rem;
 }
 
 .gg-table td {
@@ -721,12 +720,13 @@ export default {
 }
 
 /deep/ .el-input__inner {
-  height: 0.4rem;
+  height: 0.38rem;
   padding: 0;
   padding-left: 4px;
   font-size: 0.16rem;
   color: #454545;
   font-weight: bold;
+  width: 4rem;
 }
 .el-select {
   font-size: 12px;
@@ -744,7 +744,7 @@ export default {
   height: 0.5rem;
   line-height: 0.5rem;
   &:hover{
-    color:#409EFF;
+    color:#FF6822;
   }
 }
 .btn_update_cencel {
@@ -792,5 +792,4 @@ export default {
   /*border: 1px solid #f56c6c;
 	border-radius: 4px;*/
 }
-
 </style>

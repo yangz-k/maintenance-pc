@@ -1,5 +1,5 @@
 <template>
-  <div id="personnelMain" class="personnel-main">
+  <div id="personnelMain" class="personnel-main font_yahei">
     <div class="l-head">
       <!-- 面包屑 -->
       <Title />
@@ -29,11 +29,11 @@
             class="user-info"
             v-for="(item, index) in userList"
             :key="index"
-            @click="queryUserObjShow(item.userId)"
+            @click="queryUserObjShow(item.userId,true)"
             @mouseout="userInfoMouseout($event)"
             @mouseover="userInfoMouseover($event)"
           >
-            <span><img :src="imgUrl + item.headPortrait" alt="" :onerror="imgError"/></span>
+            <span><img :src="item.headPortrait ? imgUrl + item.headPortrait : ''" alt="" :onerror="imgError"/></span>
             <span class="user-info-span user-info-name">{{ item.name }}</span>
             <span class="user-info-span user-info-telephone">{{
               item.telephone
@@ -134,8 +134,8 @@ export default {
           // ret["data"] = headPortrait.urlList;
           if (ret && ret["code"] == "success") {
             let data = ret["data"];
-            this.userList = data;
-            this.allUserList = data;
+            this.userList = JSON.parse(JSON.stringify(data));
+            this.allUserList = JSON.parse(JSON.stringify(data));
             if (data && data.length == 0) {
               return;
             } else {
@@ -212,14 +212,14 @@ export default {
       });
     },
     //查询用户信息并且展示
-    queryUserObjShow(id) {
+    queryUserObjShow(id,listClick) {
       if (!this.personnelInfoSwitchState) {
         let obj = this.getUserObj(id);
-        this.mapHeadPortraitClick(obj);
+        this.mapHeadPortraitClick(obj,listClick);
       }
     },
     //map点击展示人员信息弹框
-    mapHeadPortraitClick(obj) {
+    mapHeadPortraitClick(obj,listClick) {
       //通过id先获取用户数据
       let point = new this.gs2.geom.Point({
         x: obj.log,
@@ -229,12 +229,13 @@ export default {
       if (name.length > 7) {
         name = name.substr(0, 7) + "...";
       }
+      let headPortrait = "";
+      if(obj.headPortrait){
+        headPortrait = api.forent_url.image_url + obj.headPortrait
+      }
       let contentTemplate =
         `<div class="tooltipUserInfor"><div class='miantenceUserInfo'>
-        <div class="headPortrait"><img src=` +
-        api.forent_url.image_url +
-        obj.headPortrait +
-        ` onerror=`+this.imgError+`></div>
+        <div class="headPortrait"><img src="` +headPortrait+`" onerror=`+this.imgError+`></div>
             <div class="userInfoPortrait"><ul>
               <li><b class="maintenance-user"></b><span title="` +
         name +
@@ -262,6 +263,9 @@ export default {
         this.userinfoOverlayWare.clear();
       }
       this.userinfoOverlayWare.add(Overlay);
+      if(listClick){
+        this.$refs.g2map.setMapCenter(point);
+      }
     },
     //切换展示人员信息框
     personnelInfoSwitch() {
@@ -323,7 +327,7 @@ export default {
     webScoketEvent() {
       let _this = this;
       let orgCode = api.getGlobalVal("maintenance_userObj").orgCode;
-      if (this.stompClient.connected) {
+      if (this.stompClient && this.stompClient.connected) {
         this.stompClient.subscribe(
           "/topic/" + orgCode + "/app_location_update",
           function(greeting) {
@@ -339,9 +343,7 @@ export default {
                 break;
               case "MSG_APP_STATUS":
                 //推送过来的上下线消息
-                _this.personnelPositionMonitoringCrudAcceptUpAndDownMessage(
-                  data
-                );
+                _this.personnelPositionMonitoringCrudAcceptUpAndDownMessage(data);
                 break;
             }
           }
@@ -406,7 +408,7 @@ export default {
           }
         }
       } else {
-        let userObj = this.getUserObj(data.userId);
+        let userObj = obj;
         if (Object.keys(userObj).length > 0) {
           //证明地图上有这个数据
           return;
@@ -442,6 +444,7 @@ export default {
   }
   // 开始用户信息的弹框
   .tooltipUserInfor {
+    z-index: 100;
     position: absolute;
     background-color: #fff;
     -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
@@ -522,7 +525,7 @@ export default {
     position: absolute;
     height: 6.6rem;
     width: 3rem;
-    z-index: 50;
+    z-index: 101;
     margin-top: 0.3rem;
     margin-left: 0.3rem;
     .list-title {
@@ -570,6 +573,12 @@ export default {
         font-size: 0.15rem;
         cursor: pointer;
       }
+      @media all and (-ms-high-contrast: none),
+			(-ms-high-contrast: active) {
+				.maintenance-searchSolid {
+	        right: 0.1rem;
+	      }
+			}
     }
     .list-main {
       height: 5rem;
@@ -620,7 +629,7 @@ export default {
         margin-left: 0.12rem;
       }
       .userInfoSwitch {
-        margin-left: 0.4rem;
+        margin-left: 0.2rem;
       }
     }
   }

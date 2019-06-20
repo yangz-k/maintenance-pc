@@ -76,7 +76,8 @@ import { Message, MessageBox } from "element-ui";
 		        if(code == "success") {
 		          let status = response.data;
 					if(status=="0"){
-						_this.newUser = true
+//						_this.newUser = true  //暂时注释掉，以后放开
+						_this.newUser = false
 					}else{
 //						alert(1)
 					}

@@ -129,14 +129,14 @@ export default {
         name: "当前例行维保计划列表",//title name
             parName: "例行维保计划制定",//父级title name
             lightMenu: api.getGlobalVal("CmenuName").lightMenu + "-0",
-            linkname: "MaintenanceManagement-RoutineMaintenancePlanning-ProprietorPlanList",
-            path: "MaintenanceManagement-RoutineMaintenancePlanning-ProprietorPlanList"
+            linkname: "MaintenanceManagement-RoutineMaintenancePlanningControl-ProprietorPlanList",
+            path: "MaintenanceManagement-RoutineMaintenancePlanningControl-ProprietorPlanList"
       };
       _this.setDetailBreadcrumb(paramCrumb,true);
       //详情页面包屑 end
-      
+
       this.$router.push({
-        name: "MaintenanceManagement-RoutineMaintenancePlanning-ProprietorPlanList",
+        name: "MaintenanceManagement-RoutineMaintenancePlanningControl-ProprietorPlanList",
         params:obj.row
       });
     }
@@ -171,5 +171,8 @@ export default {
 }
 /deep/.el-input__suffix-inner {
   cursor: pointer;
+}
+.enterprise-name-search{
+  margin-left: -15.83333%;
 }
 </style>

@@ -5,9 +5,9 @@
       <Title />
     </el-row>
     <!-- 搜索栏 -->
-    <el-row class="contract-operation-head" type="flex" justify="space-around" align="middle">
+    <el-row class="contract-operation-head" type="flex" align="middle">
       <el-col :span="5">
-        <div class="div-flex">
+        <div class="div-flex ml-20">
           <span class="fs18px colorLabel">维保人员：</span>
           <el-select v-model.trim="userName" @change="searchFilter()" clearable placeholder="请选择" class="flex1">
             <el-option
@@ -20,7 +20,7 @@
         </div>
       </el-col>
       <el-col :span="4">
-        <div class="div-flex">
+        <div class="div-flex ml-30">
           <span class="fs18px colorLabel">状态：</span>
           <el-select  v-model.trim="status" @change="searchFilter()" clearable placeholder="请选择" class="flex1">
             <el-option
@@ -33,7 +33,7 @@
         </div>
       </el-col>
       <el-col :span="7">
-        <div class="div-flex align_center">
+        <div class="div-flex align_center ml-30">
           <span class="fs18px colorLabel">申请时间：</span>
           <el-date-picker
             style="line-height: 0.6rem;"
@@ -49,14 +49,14 @@
         </div>
       </el-col>
       <el-col :span="4">
-        <div class="div-flex">
+        <div class="div-flex ml-30">
           <el-input
             class="flex1"
             v-model="informName"
             placeholder="请输入告知单名称"
             clearable="clearable"
-            suffix-icon="el-icon-search" 
-            @clear="searchFilter()" 
+            suffix-icon="el-icon-search"
+            @clear="searchFilter()"
             @change="searchFilter()">
           </el-input>
         </div>
@@ -85,6 +85,7 @@ import axios from "axios";
 import api from '~/config/http';
 import Table from "~/components/Table";
 import Title from "~/components/Title";
+import download from 'ly-downloader';
 export default {
   components: {
     Table,
@@ -153,7 +154,7 @@ export default {
           {
             title: "预览",
             type: "text",
-            icon: "maintenance-icon_yan",
+            icon: "el-icon-view",
             show: (index, row) => {
               return true;
             },
@@ -241,29 +242,11 @@ export default {
     },
     // 下载附件
     handleDownload(index, row) {
-			// window.location.href = api.forent_url.maintenance_service_url + "/maintenance/exportNoticeWord?infoId=" + row.id;
-      let $a = document.createElement("a");
-      $a.setAttribute("href", api.forent_url.maintenance_service_url + "/maintenance/exportNoticeWord?infoId=" + row.id);
-      $a.download = row.attachName;
-      let evObj = document.createEvent("MouseEvents");
-      evObj.initMouseEvent(
-        "click",
-        true,
-        true,
-        window,
-        0,
-        0,
-        0,
-        0,
-        0,
-        false,
-        false,
-        true,
-        false,
-        0,
-        null
-      );
-      $a.dispatchEvent(evObj);
+      if(myBrowser() == 'FF'){
+        download(1, api.forent_url.maintenance_service_url + "/maintenance/exportNoticeWord?fireFox=1&infoId=" + row.id);
+      }else{
+        download(1, api.forent_url.maintenance_service_url + "/maintenance/exportNoticeWord?infoId=" + row.id);
+      }
     },
     // 预览
     handlePreview(index, row) {
@@ -274,9 +257,15 @@ export default {
         if (res && res.code === 'success') {
           if (res.data) {
             this.previewVisible = true;
-            setTimeout(function(){
-              _this.previewSrc = api.forent_url.image_url + res.data;
-            })
+            if(myBrowser() === "IE"){
+              setTimeout(function(){
+                _this.previewSrc = api.forent_url.localHostName+"/pdfjs/web/viewer.html?file="+api.forent_url.image_url + res.data;
+              })
+            }else{
+              setTimeout(function(){
+                _this.previewSrc = api.forent_url.image_url + res.data;
+              })
+            }
           } else {
             this.$message.error("pdf生成失败！");
           }
@@ -318,6 +307,12 @@ export default {
   }
   /deep/.el-input__suffix-inner {
     cursor: pointer;
+  }
+  .colorLabel{
+    font-size:.18rem;
+    font-family:'HiraginoSansGB-W3';
+    font-weight:normal;
+    color:#43495A;
   }
 }
 </style>

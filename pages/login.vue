@@ -1,10 +1,10 @@
 <template>
-	<div class="main" v-loading="loading">
+	<div class="main font_yahei" v-loading="loading">
 
 		<div class="copyright">
-			Copyright © 2018 辰安天泽智联技术有限公司 All rights reserved
-			<a href="http://www.miitbeian.gov.cn/" target="_blank">皖ICP备18004330号-1</a>
-			<a href="http://www.ibw.cn/mianze.htm" target="_blank">免责声明</a>
+			Copyright © 2018 辰安天泽智联技术有限公司 All rights reserved 皖ICP备18004330号-1
+			<!--<a href="javascript:;">皖ICP备18004330号-1</a>-->
+			<!--<a href="http://www.ibw.cn/mianze.htm" target="_blank">免责声明</a>-->
 		</div>
 		<div class="wb-login-header">
 			<img src="../assets/img/Overalllayout/logoTitle.png" alt="维保登录">
@@ -22,7 +22,7 @@
 			<div class="login">
 				<div class="login-wrap div-flex align_center" prop="">
 					<span class="login-ipt-icon"><i class="maintenance-user"></i></span>
-					<el-input id="loginName" v-model="accountInput" placeholder="请输入账号" @keyup.enter.native="login"></el-input>
+					<el-input id="loginName" v-model="accountInput" placeholder="请输入用户名" @keyup.enter.native="login"></el-input>
 				</div>
 			</div>
 			<div class="login">
@@ -37,25 +37,27 @@
 		</el-form>
 
 		<!-- 选择企业开始 -->
-		<el-dialog title="选择企业" :visible.sync="previewVisible" :top="'0'" :close-on-click-modal="false" width="4.5rem">
-			<div id="loginDiv" class="login-div">
-				<ul>
-					<li :title="joinEnterprise.orgName" v-for="(joinEnterprise,index) in joinEnterpriseData" :key="index">
-						<!-- <span><input type="radio" name="radio" :value="joinEnterprise.id" :checked="isChecked" /></span>
-						<span>{{joinEnterprise.orgName}}</span> -->
+		<div v-if="previewVisible">
+			<el-dialog title="选择企业" :visible.sync="previewVisible" :top="'0'" :close-on-click-modal="false" width="4.5rem" @close="closeUnitDialog">
+				<div id="loginDiv" class="login-div">
+					<ul>
+						<li :title="joinEnterprise.orgName" v-for="(joinEnterprise,index) in joinEnterpriseData" :key="index">
+							<!-- <span><input type="radio" name="radio" :value="joinEnterprise.id" :checked="isChecked" /></span>
+							<span>{{joinEnterprise.orgName}}</span> -->
 
-						<a v-if="joinEnterprise.isChecked" href="javascript:;" class="unchecked checked" :value="joinEnterprise.id" @click="enterprise($event)">
-							{{joinEnterprise.orgName}}
-							<b id='logo' class='el-icon-check'></b>
-						</a>
-						<a v-else href="javascript:;" class="unchecked" :value="joinEnterprise.id" @click="enterprise($event)">{{joinEnterprise.orgName}}</a>
-					</li>
-				</ul>
-			</div>
-			<div class="div-flex all_center">
-				<el-button id="joinEnterprise" class="login-btn-dialog fs18px button-radius" type="warning" @click="joinEnterprise(joinEnterpriseData,userInfo)">进入企业</el-button>
-			</div>
-		</el-dialog>
+							<a v-if="joinEnterprise.isChecked" href="javascript:;" class="unchecked checked" :value="joinEnterprise.id" @click="enterprise($event)">
+								{{joinEnterprise.orgName}}
+								<b id='logo' class='el-icon-check'></b>
+							</a>
+							<a v-else href="javascript:;" class="unchecked" :value="joinEnterprise.id" @click="enterprise($event)">{{joinEnterprise.orgName}}</a>
+						</li>
+					</ul>
+				</div>
+				<div class="div-flex all_center">
+					<el-button id="joinEnterprise" class="login-btn-dialog fs18px button-radius" type="warning" @click="joinEnterprise(joinEnterpriseData,userInfo)">进入企业</el-button>
+				</div>
+			</el-dialog>
+		</div>
 		<!-- 选择企业结束 -->
 
 	</div>
@@ -69,7 +71,7 @@
 	import { Message } from "element-ui";
 	import api from "~/config/http";
 	import { mapMutations } from "vuex";
-	import validate from "~/plugins/validate";
+  import validate from "~/plugins/validate";
 	export default {
 		layout: "login",
 		data() {
@@ -100,6 +102,9 @@
 			};
 		},
 		methods: {
+			closeUnitDialog(){
+				this.previewVisible = false;
+			},
 			enterprise(dom) {
 				$(".unchecked").removeClass("checked");
 				$("#logo").remove();
@@ -129,7 +134,8 @@
 					};
 					api.post(serverUrl, params, 30000).then(obj => {
 						if(obj && obj.code == "success") {
-							that.userInfo = obj["data"]
+              that.userInfo = obj["data"]
+              api.setGlobalVal("userToken", that.userInfo.userToken);
 							let getOrgListByUserId =
 								api.forent_url.maintenance_service_url +
 								"/userAuth/getOrgListByUserId";
@@ -218,7 +224,6 @@
 							sysCode_web: "sys_maintenance_web"
 						};
 						api.setGlobalVal("maintenance_userObj", JSON.stringify(data));
-						api.setGlobalVal("userToken", data.userToken);
 						api.setGlobalVal("CmenuName", JSON.stringify({
 							lightMenu: "0"
 						}));
@@ -239,7 +244,7 @@
 								"unitUserNum_ppl": retData.wbzxUserNum_ppl,
 								"userLoginName_ppl": retData.loginName_ppl
 							})
-						})
+            })
 						//登陆index
 						that.$router.push({
 							name: "main-main",
@@ -379,6 +384,7 @@
 		border: 1px solid rgba(255, 104, 34, 1);
 		border-radius: 0.18rem;
 		margin-top: 0.1rem;
+    font-weight:normal;
 	}
 
 	.login-btn-dialog{
@@ -525,13 +531,13 @@
 
 	#btn {
 		display: inline-block;
-		width: 3.76rem;
-		height: .70rem;
+		width: 3.74rem;
+		height: .68rem;
 		background: #ff7b45;
 		line-height: .35rem;
-		border-radius: .35rem;
+		border-radius: .34rem;
 		text-align: center;
 		color: #fff;
-		font-size: .2rem;
+		font-size: .22rem;
 	}
 </style>

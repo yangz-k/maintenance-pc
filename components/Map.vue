@@ -90,6 +90,10 @@ export default {
     setMapLevel(num){
       this.g2map.zoomTo(num);
     },
+    getMapLevel(){
+      const level = this.g2map.getZoomLevel();
+      return level;
+    },
     getMapCenter(){
       return this.g2map.getCenter();
     },

@@ -5,6 +5,7 @@
         //添加详情页面包屑导航
         setDetailBreadcrumb(paramCrumb,isLevelDetail){
           //console.log('_-------paramCrumb:'+JSON.stringify(paramCrumb));
+          //debugger;
           if(isLevelDetail){
             api.setGlobalVal(
                   "CmenuName",
@@ -26,7 +27,18 @@
                     title: paramCrumb.name
                   })
                 );
+            //console.log('_api.getGlobalVal("LevelDetail"):'+JSON.stringify(api.getGlobalVal("LevelDetail")));
                 //debugger;
+            if(paramCrumb.pageParams){
+              api.setGlobalVal(
+                  "pageParams",
+                  JSON.stringify({
+                    pageParams: paramCrumb.pageParams
+                  })
+                );
+            }
+            //console.log('_api.getGlobalVal("pageParams"):'+JSON.stringify(api.getGlobalVal("pageParams")));
+            //
           }
 
         },

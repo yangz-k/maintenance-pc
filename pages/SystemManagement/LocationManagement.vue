@@ -104,15 +104,15 @@ export default {
       name: "位置管理编辑",//title name
             parName: "位置管理",//父级title name
             lightMenu: api.getGlobalVal("CmenuName").lightMenu + "-0",
-            linkname: "SystemManagement-LocationManagement-LocationManagementEdit",
-            path: "SystemManagement-LocationManagement-LocationManagementEdit"
+            linkname: "SystemManagement-LocationManagementControl-LocationManagementEdit",
+            path: "SystemManagement-LocationManagementControl-LocationManagementEdit"
       };
       _this.setDetailBreadcrumb(paramCrumb,true);
       //详情页面包屑 end
-          
+
       console.log('row', row)
       this.$router.push({
-        name: "SystemManagement-LocationManagement-LocationManagementEdit",
+        name: "SystemManagement-LocationManagementControl-LocationManagementEdit",
         params:{
           id: row.id
         }
