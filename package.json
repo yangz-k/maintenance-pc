@@ -21,7 +21,7 @@
     },
     "dependencies": {
         "audit": "0.0.6",
-        "axios": "^0.18.0",
+        "axios": "^0.21.1",
         "babel-loader": "^8.0.5",
         "babel-polyfill": "^6.26.0",
         "cookieparser": "^0.1.0",
